@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div style="display: flex;align-items:center;justify-content: center ; ">
+<style>
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+<div class="row classs">
+    <div class="bg-light rounded h-100 p-4">
+ <i style="font-size: 50px; color: #333; cursor: pointer;" class="ri-arrow-left-s-line"></i>
+        <h6 class="mb-4"> Category Table</h6>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>nom_categ</th>
+                    <th>description</th>
+                    <th>photo</th>
+                    <th>Modification</th>
+                    <th>suppression</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for category in categories %}
+                    <tr>
+                        <td>{{ category.getNomCateg() }}</td>
+                        <td>{{ category.getDescription() }}</td>
+                        <td>
+                            {% if category.getPhoto() %}
+                                <img src="{{ category.getPhoto() }}" alt="{{ category.getNomCateg() }}" width="100">
+                            {% else %}
+                                Aucune photo disponible
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a  class="btn btn-success" href="{{ path('modify_category', {'id': category.id}) }}">Modifier</a>
+                        </td>
+                        <td>
+                            <a  class="btn btn-danger" href="{{path('supp_category',{'id':category.id})}}">suppression</a>
+                        </td>
+                    </tr>
+                {% endfor %}  <!-- closing tag for the for loop -->
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
+
+
+
+{% endblock %}

@@ -1,0 +1,13 @@
+#index:
+#    path: /
+#    controller: App\Controller\DefaultController::index
+afficher_events:
+    path: /afficher-events
+    controller: App\Controller\EventController::afficherEvents
+afficher_categories:
+    path: /afficher_categories
+    controller: App\Controller\CategoryController::afficher_categories
+    
+
+
+
