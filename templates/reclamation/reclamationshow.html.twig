@@ -1,0 +1,38 @@
+{% extends 'baseback.html.twig' %}
+{% block main  %}
+    <div class="card-body">
+        <h5 class="card-title">Reclamation</h5>
+
+        <!-- Default Table -->
+        <table class="table">
+            <thead>
+            <tr>
+
+                <th scope="col">type reclamation</th>
+                <th scope="col">description reclamation</th>
+                <th scope="col">objet</th>
+                <th scope="col">date_r</th>
+                <th scope="col">etat</th>
+
+                <th scope="col">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr {% for a in reclamation %}>
+
+                <td>{{ a.TypeR }}</td>
+                <td>{{ a.DescriptionR }}</td>
+                <td>{{ a.objet }}</td>
+                <td>{{ a.DateR|date("Y-m-d") }}</td>
+                <td>   {{ a.etat }}
+                     </td>
+                <td> <a href="{{ path('delete_rec',{'id':a.id}) }}"> Delete</a> <a href="{{ path('update_rec',{'id':a.id}) }}"> update</a> </td>
+
+            </tr {% endfor %} >
+
+            </tbody>
+        </table>
+
+        <!-- End Default Table Example -->
+    </div>
+{% endblock %}
