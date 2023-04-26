@@ -5,7 +5,7 @@ namespace App\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-
+use App\Repository\Offre2Repository;
 /**
  * Offre2
  *
@@ -44,6 +44,7 @@ class Offre2
      * @var float
      *
      * @ORM\Column(name="reduction", type="float", precision=10, scale=0, nullable=false)
+     * @Assert\NotBlank()
      */
     private $reduction;
 
@@ -69,6 +70,7 @@ class Offre2
      *
      * @ORM\Column(name="dateF", type="date", nullable=false)
      * @Assert\NotBlank()
+     * @Assert\GreaterThanOrEqual(propertyPath="dated")
      */
     private $datef;
 

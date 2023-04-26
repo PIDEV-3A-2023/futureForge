@@ -25,12 +25,13 @@
     <link rel="stylesheet" href="../../../css/flaticon.css">
     <link rel="stylesheet" href="../../../css/icomoon.css">
     <link rel="stylesheet" href="../../../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   </head>
   <body>
     
 	  <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
 	    <div class="container">
-	      <a class="navbar-brand" href="{{ path('app_home') }}">Car<span>Book</span></a>
+	      <a class="navbar-brand" href="{{ path('app_home') }}">Thn<span>ity</span></a>
 	      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
 	        <span class="oi oi-menu"></span> Menu
 	      </button>
@@ -39,6 +40,7 @@
 	        <ul class="navbar-nav ml-auto">
 	          <li class="nav-item"><a href="{{ path('app_home') }}" class="nav-link">Home</a></li>
 	          <li class="nav-item"><a href="{{ path('app_abonnement_index') }}" class="nav-link">Abonnement</a></li>
+	          <li class="nav-item"><a href="{{ path('app_offre2_index') }}" class="nav-link">Offre Ab</a></li>
 	          <li class="nav-item"><a href="{{ path('app_offre_index') }}" class="nav-link">Offre de Cov</a></li>
 	          <li class="nav-item"><a href="{{ path('app_reservation_bus_index') }}" class="nav-link">Reservation Bus</a></li>
 	          <li class="nav-item"><a href="{{ path('app_reservation_covoiturage_index') }}" class="nav-link">Reservation Covoiturage</a></li>
@@ -64,21 +66,6 @@
 		<section class="ftco-section bg-light">
     	<div class="container">
 			{% block body %}{% endblock %}
-    		<div class="row mt-5">
-          <div class="col text-center">
-            <div class="block-27">
-              <ul>
-                <li><a href="#">&lt;</a></li>
-                <li class="active"><span>1</span></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#">4</a></li>
-                <li><a href="#">5</a></li>
-                <li><a href="#">&gt;</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
     	</div>
     </section>
     

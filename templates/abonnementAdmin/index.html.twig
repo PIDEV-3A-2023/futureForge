@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Abonnement index
+{% endblock %}
+
+{% block body %}
+	<h1>Abonnement index</h1>
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Nom</th>
+				<th>Prenom</th>
+				<th>Image</th>
+				<th>Email</th>
+				<th>Identifiant</th>
+				<th>Cin</th>
+				<th>Type</th>
+				<th>Dated</th>
+				<th>Datef</th>
+				<th>Prix</th>
+				<th>actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for abonnement in abonnements %}
+				<tr>
+					<td>{{ abonnement.nom }}</td>
+					<td>{{ abonnement.prenom }}</td>
+					<td>
+						<img style="height: 100px; width: 100px; object-fit: cover;" src="{{ asset('uploads/' ~ abonnement.image) }}"/></td>
+					<td>{{ abonnement.email }}</td>
+					<td>{{ abonnement.identifiant }}</td>
+					<td>{{ abonnement.cin }}</td>
+					<td>{{ abonnement.type }}</td>
+					<td>{{ abonnement.dated ? abonnement.dated|date('Y-m-d') : '' }}</td>
+					<td>{{ abonnement.datef ? abonnement.datef|date('Y-m-d') : '' }}</td>
+					<td>{{ abonnement.prix }}</td>
+					<td>
+						<a href="{{ path('admin_abonnement_show', {'id': abonnement.id}) }}">show</a>
+						<a href="{{ path('print_abonnement', {'id': abonnement.id}) }}">export</a>
+					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="12">no records found</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+						<a href="{{ path('print_abonnements', {'id': 0}) }}">export all</a>
+{% endblock %}

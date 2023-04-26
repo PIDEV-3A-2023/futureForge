@@ -18,7 +18,7 @@
 	    						<span class="cat">{{ reservation_covoiturage.nbrPlace }}</span>
                             </div>
                             <div style="margin-right: 0; margin-left: auto;">
-	    						<p class="price ml-auto">{{ reservation_covoiturage.date }}</p>
+	    						<p class="price ml-auto">{{ reservation_covoiturage.date ? reservation_covoiturage.date|date('Y-m-d') : '' }}</p>
 	    						<p class="price ml-auto">{{ reservation_covoiturage.distination }}</p>
                             </div>
     						</div>

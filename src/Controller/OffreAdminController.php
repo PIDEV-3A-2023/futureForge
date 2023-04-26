@@ -32,4 +32,15 @@ class OffreAdminController extends AbstractController
             'offre' => $offre,
         ]);
     }
+
+    #[Route('/{idOffre}', name: 'admin_offre_delete', methods: ['POST'])]
+    public function delete(Request $request, Offre $offre, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$offre->getIdOffre(), $request->request->get('_token'))) {
+            $entityManager->remove($offre);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('admin_offre_index', [], Response::HTTP_SEE_OTHER);
+    }
 }
