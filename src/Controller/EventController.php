@@ -10,6 +10,8 @@ use App\Entity\Event;
 use App\Form\EventType;
 use App\Entity\Category;
 use App\Repository\AppointmentRepository;
+use App\Repository\EventRepository;
+use App\Form\RechercheeventType;
 
 
 
@@ -98,48 +100,54 @@ $form = $this->createForm(EventType::class, $event);
 
         return $this->redirectToRoute('display_event');
     }
-    #[Route('/stat', name: 'stat')]
-    public function stat(AppointmentRepository $appointmentRepository): Response
-    {
-        $appointmentsByMonth = $appointmentRepository->countAppointmentsByMonth();
-        $appointmentsByEvent = $appointmentRepository->countAppointmentsByEvent();
-        $appointmentStatus = $appointmentRepository->countAppointmentsByStatus();
-    
-        return $this->render('appointment/calendar.html.twig', [
-            'appointmentsByMonth' => $appointmentsByMonth,
-            'appointmentsByEvent' => $appointmentsByEvent,
-            'totalAppointments' => $appointmentStatus['total'],
-            'confirmedAppointments' => $appointmentStatus['confirmed'],
-            'waitingAppointments' => $appointmentStatus['waiting'],
-            
-        ]);
-    }
-    public function search($query)
-{
-    return $this->createQueryBuilder('a')
-        ->where('a.title LIKE :query')
-        ->orWhere('a.content LIKE :query')
-        ->setParameter('query', '%'.$query.'%')
-        ->getQuery()
-        ->getResult();
-}
-
+   
+  
 /**
- * @Route("/search", name="search")
- */
-
-public function searchh(Request $request, ArticleRepository $articleRepository)
-{
-    $query = $request->query->get('q');
-    
-    // Perform the search using a repository method or query builder
-    $articles = $articleRepository->search($query);
-    
-    return $this->render('article/search.html.twig', [
-        'articles' => $articles,
-        'query' => $query
-    ]);
-}
-
-    
+     * @Route("/search", name="event_search")
+     * */
+        
+            public function search(Request $request,EventRepository $repo): Response
+            {
+                
+                $form = $this->createForm(RechercheeventType::class);
+                        $form->handleRequest($request);
+                    
+                        if ($form->isSubmitted() && $form->isValid()) {
+                            $data = $form->getData();
+                            $criteria = [
+                                'nom' => $data['nom'],
+                                'categorie' => $data['categorie'],
+                                'type' => $data['type']
+                            ];
+                    
+                            $events = $repo->findBySearchCriteria($criteria);
+                            return $this->render('event/search.html.twig', [
+                                'event' => $events,
+                                'form' => $form->createView(),
+                            ]);
+                    
+                            
+                        }
+                        
+                return $this->render('event/search.html.twig', [
+                    'event' => [],
+                    'form' => $form->createView(),
+                ]);
+            }
+            /**
+     * @Route("/stat", name="stat")
+      * */
+            public function stat(eventRepository $eventRepository): Response
+            {
+                $eventByMonth = $eventRepository->counteventByMonth();
+                $eventByCategorie = $eventRepository->counteventByCategorie();
+                
+            
+                return $this->render('event/statistique.html.twig', [
+                    'eventByMonth' => $eventByMonth,
+                    'eventByCategorie' =>$eventByCategorie,
+                    
+                    
+                ]);
+            }
 }

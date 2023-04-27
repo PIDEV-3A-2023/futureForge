@@ -147,4 +147,5 @@ public function modifiercategory(Request $request, $id): Response
         ]);
     }
     
-}
+     }
+    

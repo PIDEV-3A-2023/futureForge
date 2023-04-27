@@ -93,21 +93,7 @@ class Category
         return $this;
     }
 
-    public function searchCategoriesByName($searchTerm)
-{
-    $entityManager = $this->getDoctrine()->getManager();
-    $queryBuilder = $entityManager->createQueryBuilder();
-
-    $queryBuilder->select('c')
-        ->from('App\Entity\Category', 'c')
-        ->where('c.name LIKE :searchTerm')
-        ->setParameter('searchTerm', '%'.$searchTerm.'%');
-
-    $query = $queryBuilder->getQuery();
-    $results = $query->getResult();
-
-    return $results;
-}
+    
 
 }
 
