@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 class AbonnementType extends AbstractType
 {
@@ -20,12 +21,20 @@ class AbonnementType extends AbstractType
             ->add('identifiant')
             ->add('cin')
             // ->add('type')
-            ->add('dated')
-            ->add('datef')
-            // ->add('prix')
-            ->add('idOffre', null, [
-                'label' => 'Offre',
+            ->add('dated', DateType::class, [
+                'widget' => 'single_text',
+                'html5' => true,
+                'attr' => ['class' => 'datepicker'],
             ])
+            ->add('datef', DateType::class, [
+                'widget' => 'single_text',
+                'html5' => true,
+                'attr' => ['class' => 'datepicker'],
+            ])
+            // ->add('prix')
+            // ->add('idOffre', null, [
+            //     'label' => 'Offre',
+            // ])
         ;
     }
 

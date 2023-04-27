@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 class Offre2Type extends AbstractType
 {
@@ -15,7 +16,7 @@ class Offre2Type extends AbstractType
         $builder
             ->add('nom')
             ->add('description')
-            // ->add('reduction')
+            ->add('reduction')
             ->add('type', ChoiceType::class, [
                 'choices' => [
                     'ANNUELLE' => 'ANNUELLE',
@@ -24,8 +25,16 @@ class Offre2Type extends AbstractType
                 ],
                 'placeholder' => 'Choose type',
             ])
-            ->add('dated')
-            ->add('datef')
+            ->add('dated', DateType::class, [
+                'widget' => 'single_text',
+                'html5' => true,
+                'attr' => ['class' => 'datepicker'],
+            ])
+            ->add('datef', DateType::class, [
+                'widget' => 'single_text',
+                'html5' => true,
+                'attr' => ['class' => 'datepicker'],
+            ])
         ;
     }
 

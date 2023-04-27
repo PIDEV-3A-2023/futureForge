@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 class OffreType extends AbstractType
 {
@@ -16,13 +17,18 @@ class OffreType extends AbstractType
             ->add('imageVehicule', FileType::class, ['mapped' => false])
             ->add('prenomChauff')
             ->add('numChauff')
-            ->add('dateOffre')
+            ->add('dateOffre', DateType::class, [
+                'widget' => 'single_text',
+                'html5' => true,
+                'attr' => ['class' => 'datepicker'],
+            ])
             ->add('heure')
             ->add('prixOffre')
             ->add('depart')
             ->add('destination')
             ->add('placesDispo')
-            ->add('idUser')
+            ->add('idUser',null,[
+                   'label' => 'etudiant'])
         ;
     }
 

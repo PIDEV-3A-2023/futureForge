@@ -10,10 +10,19 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 #[Route('/abonnement')]
 class AbonnementController extends AbstractController
 {
+    private $mailer;
+
+    public function __construct(MailerInterface $mailer)
+    {
+        $this->mailer = $mailer;
+    }
+
     #[Route('/', name: 'app_abonnement_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
@@ -26,8 +35,8 @@ class AbonnementController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_abonnement_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/new/{id}', name: 'app_abonnement_new', methods: ['GET', 'POST'])]
+    public function new(Offre2 $offre2, Request $request, EntityManagerInterface $entityManager): Response
     {
         $abonnement = new Abonnement();
         $form = $this->createForm(AbonnementType::class, $abonnement);
@@ -41,16 +50,28 @@ class AbonnementController extends AbstractController
                 $uploads_directory,
                 $filename
             );
-            $idOffre = $request->request->get('abonnement')['idOffre'];
-            $offre = $entityManager->find(Offre2::class, $idOffre);
-            // dd($offre);
             $abonnement->setImage($filename);
-            $abonnement->setType($offre->getType());
-            // $abonnement->setDated($offre->getDated());
-            // $abonnement->setDatef($offre->getDatef());
-            $abonnement->setPrix(150 * $offre->getReduction() / 100);
+            $abonnement->setType($offre2->getType());
+            $abonnement->setPrix(120 - (120 * $offre2->getReduction() / 100));
+            $abonnement->setIdOffre($offre2);
+            // dd($abonnement);
             $entityManager->persist($abonnement);
             $entityManager->flush();
+            
+            // Create a new Email object and set its properties
+            $email = (new Email())
+            ->from('fourat.abdellatif@esprit.tn')
+            ->to($abonnement->getEmail())
+            ->subject('Abonnement confirmé')
+            ->html(
+                $this->renderView(
+                    'emails/abonnementconfirmed.html.twig',
+                    ['abonnement' => $abonnement]
+                )
+            );
+            // ->text("Salut" . $abonnement->getNom() . " " . $abonnement->getPrenom() . ". Votre abonnement pour l'offre " . $abonnement->getIdOffre()->getNom() . ' a été confirmé avec succès. Merci pour votre confiance');
+
+            $this->mailer->send($email);
 
             return $this->redirectToRoute('app_abonnement_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -58,6 +79,7 @@ class AbonnementController extends AbstractController
         return $this->renderForm('abonnement/new.html.twig', [
             'abonnement' => $abonnement,
             'form' => $form,
+            'offre2' => $offre2
         ]);
     }
 
@@ -72,6 +94,7 @@ class AbonnementController extends AbstractController
     #[Route('/{id}/edit', name: 'app_abonnement_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Abonnement $abonnement, EntityManagerInterface $entityManager): Response
     {
+        $offre2 = $abonnement->getIdOffre();
         $form = $this->createForm(AbonnementType::class, $abonnement);
         $form->handleRequest($request);
 
@@ -83,13 +106,8 @@ class AbonnementController extends AbstractController
                 $uploads_directory,
                 $filename
             );
-            $idOffre = $request->request->get('abonnement')['idOffre'];
-            $offre = $entityManager->find(Offre2::class, $idOffre);
-            // dd($offre);
             $abonnement->setImage($filename);
-            $abonnement->setType($offre->getType());
-            $abonnement->setDated($offre->getDated());
-            $abonnement->setDatef($offre->getDatef());
+            // dd($abonnement);
             $entityManager->persist($abonnement);
             $entityManager->flush();
 

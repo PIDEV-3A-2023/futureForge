@@ -6,6 +6,7 @@ use App\Entity\ReservationCovoiturage;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 class ReservationCovoiturageType extends AbstractType
 {
@@ -17,7 +18,11 @@ class ReservationCovoiturageType extends AbstractType
             ->add('pntRencontre')
             ->add('distination')
             ->add('nbrPlace')
-            ->add('date')
+            ->add('date', DateType::class, [
+                'widget' => 'single_text',
+                'html5' => true,
+                'attr' => ['class' => 'datepicker'],
+            ])
         ;
     }
 

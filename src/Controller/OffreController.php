@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Entity\Avis;
 use App\Form\OffreType;
 use App\Form\AvisType;
+use App\Repository\OffreRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,15 +17,38 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/offre')]
 class OffreController extends AbstractController
 {
+    #[Route('/search', name: 'offre_search')]
+    public function search(EntityManagerInterface $entityManager, Request $request, OffreRepository $offreRepository): Response
+    {
+        $query = $request->query->get('q');
+        $offres = $offreRepository->findByDestination($query);
+        $avis = $entityManager
+            ->getRepository(Avis::class)
+            ->findAll();
+
+        return $this->render('offre/search.html.twig', [
+            'offres' => $offres,
+            'avis' => $avis,
+            'query' => $query,
+        ]);
+    }
+
     #[Route('/', name: 'app_offre_index', methods: ['GET'])]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(EntityManagerInterface $entityManager, Request $request, OffreRepository $offreRepository): Response
     {
         $offres = $entityManager
             ->getRepository(Offre::class)
             ->findAll();
+        $avis = $entityManager
+            ->getRepository(Avis::class)
+            ->findAll();
+        $query = $request->query->get('q');
+        $offres = $offreRepository->findByDestination($query);
 
         return $this->render('offre/index.html.twig', [
             'offres' => $offres,
+            'avis' => $avis,
+            'query' => $query,
         ]);
     }
 
@@ -60,10 +84,30 @@ class OffreController extends AbstractController
     }
 
     #[Route('/{idOffre}', name: 'app_offre_show', methods: ['GET'])]
-    public function show(Offre $offre): Response
+    public function show(Offre $offre, EntityManagerInterface $entityManager): Response
     {
+        $avis = $entityManager
+            ->getRepository(Avis::class)
+            ->findAll();
+
+        foreach ($avis as $key => $avi) {
+            if ($avi->getIdOffre() != $offre) {
+                unset($avis[$key]);
+            }
+        }
+
+        $averageRate = array_reduce($avis, function($carry, $item) {
+            return $carry + $item->getRate();
+        });
+        
+        $averageRate /= count($avis);
+        $averageRate = number_format($averageRate, 0);
+        $averageRate = intval($averageRate);
+
         return $this->render('offre/show.html.twig', [
             'offre' => $offre,
+            'avis' => $avis,
+            'avgRate' => $averageRate
         ]);
     }
 
