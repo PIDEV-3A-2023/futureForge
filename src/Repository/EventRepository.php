@@ -75,4 +75,12 @@ class EventRepository extends ServiceEntityRepository
         ;
     }
     */
+    public function findAllJoinedToCategory()
+{
+    $qb = $this->createQueryBuilder('e')
+        ->leftJoin('e.categorie', 'c')
+        ->addSelect('c');
+
+    return $qb->getQuery()->getResult();
+}
 }

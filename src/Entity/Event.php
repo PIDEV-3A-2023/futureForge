@@ -6,7 +6,7 @@ use App\Repository\EventRepository;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Category;
 use App\Entity\Event;
-
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 /**
@@ -24,37 +24,44 @@ class Event
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="Le nom de l'événement ne peut pas être vide")
+     * @Assert\Length(max=255, maxMessage="Le nom de l'événement doit faire au maximum {{ limit }} caractères")
      */
     private $nom;
 
-    /**
+     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="Le type de l'événement ne peut pas être vide")
+     * @Assert\Length(max=255, maxMessage="Le type de l'événement doit faire au maximum {{ limit }} caractères")
      */
     private $type;
- /**
-    * @ORM\Column(type="string", length=255, nullable=false)
-    */
-   private $description ;
+  /**
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="La description de l'événement ne peut pas être vide")
+     * @Assert\Length(max=255, maxMessage="La description de l'événement doit faire au maximum {{ limit }} caractères")
+     */
+    private $description;
 
-    /**
+
+   /**
      * @ORM\Column(type="date")
+     * @Assert\NotBlank(message="La date de l'événement ne peut pas être vide")
+     * @Assert\GreaterThanOrEqual("today", message="La date de l'événement doit être égale ou supérieure à aujourd'hui")
      */
     private $date;
 
+
   /**
- * @ORM\ManyToOne(targetEntity="App\Entity\Category")
- * @ORM\JoinColumn(name="categorie_id", referencedColumnName="id")
- */
-private $categorie;
+     * @ORM\ManyToOne(targetEntity="App\Entity\Category")
+     * @ORM\JoinColumn(name="categorie_id", referencedColumnName="id")
+     * @Assert\NotNull(message="La catégorie de l'événement ne peut pas être vide")
+     */
+    private $categorie;
 
     public function getId(): ?int
     {
         return $this->id;
     }
-    public function setId(int $id): self
-    {
-        $this->id = $id;
-        return $this;}
 
     public function getNom(): ?string
     {
@@ -63,7 +70,6 @@ private $categorie;
 
     public function setNom(string $nom): self
     {
-        
         $this->nom = $nom;
 
         return $this;
@@ -105,9 +111,9 @@ private $categorie;
         return $this;
     }
 
-    public function getCategorie(): ?int
+    public function getCategorie(): ?Category
     {
-        return $this->categorie ? $this->categorie->getId() : null;
+        return $this->categorie;
     }
 
     public function setCategorie(?Category $categorie): self
@@ -116,5 +122,4 @@ private $categorie;
 
         return $this;
     }
-   
 }

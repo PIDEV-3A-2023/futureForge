@@ -21,27 +21,32 @@ class Category
      */
     private $id;
 
+     
     /**
      * @ORM\Column(type="string", length=25)
      * @Assert\NotBlank(message="Le nom de la catégorie ne peut pas être vide")
      * @Assert\Length(max=25, maxMessage="Le nom de la catégorie doit faire au maximum {{ limit }} caractères")
+     
      */
     private $nom_categ;
+    
 
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="La description ne peut pas être vide")
      */
     private $description;
 
     /**
-     * @ORM\Column(type="blob")
+     * @ORM\Column(type="string", length=3000 ,nullable=true)
      */
     private $photo;
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Event", mappedBy="categorie")
      */
     private $events;
+    
 
     public function getId(): ?int
     {
@@ -76,16 +81,33 @@ class Category
         return $this;
     }
 
-    public function getPhoto()
+    public function getPhoto(): ?string
     {
         return $this->photo;
     }
 
-    public function setPhoto($photo): self
+    public function setPhoto(string $photo): self
     {
         $this->photo = $photo;
 
         return $this;
     }
-    
+
+    public function searchCategoriesByName($searchTerm)
+{
+    $entityManager = $this->getDoctrine()->getManager();
+    $queryBuilder = $entityManager->createQueryBuilder();
+
+    $queryBuilder->select('c')
+        ->from('App\Entity\Category', 'c')
+        ->where('c.name LIKE :searchTerm')
+        ->setParameter('searchTerm', '%'.$searchTerm.'%');
+
+    $query = $queryBuilder->getQuery();
+    $results = $query->getResult();
+
+    return $results;
 }
+
+}
+

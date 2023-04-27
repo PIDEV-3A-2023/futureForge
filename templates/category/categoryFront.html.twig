@@ -1,22 +1,23 @@
 {% extends 'base1.html.twig' %}
 {% block body %}
-
+</br>
  <div class="container my-5">
     <div class="row justify-content-center">
       {% for category in categories %}
-        <div class="col-md-4 my-3">
+        <div class="col-md-8 my-9">
           <div class="card">
             <div class="card-header">
               <h5 class="card-title">{{ category.getNomCateg() }}</h5>
             </div>
             <div class="card-body">
               <p class="card-text">{{ category.getDescription() }}</p>
-              <p class="card-text">{% if category.getPhoto() %}
-                                <img src="{{ category.getPhoto() }}" alt="{{ category.getNomCateg() }}" width="100">
-                            {% else %}
-                                Aucune photo disponible
-                            {% endif %}
-              </p>
+                                   <td>
+                                    {% if category.getPhoto() %}
+                                   <img src="{{ asset('Category_images_directory/' ~ category.photo) }}" alt="{{ category.photo }}">
+                                   {% else %}
+                                      Aucune photo disponible
+                                    {% endif %}
+                                     </td>
             </div>
           </div>
         </div>

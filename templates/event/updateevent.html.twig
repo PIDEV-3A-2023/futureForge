@@ -1,11 +1,13 @@
 
 {% block body %}
-</br>
-    <div style="display: flex;align-items:center;justify-content: center">
-        <div class="row">
-<div class="bg-light rounded h-400 p-4">
+<div style="display: flex;align-items:center;justify-content: center ; margin-block-start: 100px;">
+<style>
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+   <div class="row">
+<div class="bg-light rounded h-100 p-4">
                 
-                    <h5 class=class="mb-4">Ajouter un event </h5>
+                    <h5 class=class="mb-88">Modifier un event </h5>
 
             <!-- General Form Elements -->
             {{ form_start(form, { attr: { novalidate: 'novalidate' } }) }}
@@ -34,11 +36,11 @@
                 </div>
                 {{ form_errors(form.date, {'attr': {'class': 'text-danger'}}) }}
 
-                <br/>
+                    <br/>
 
                 <div class="col-sm-50" style="display: flex;align-items: center;justify-content: center">
 
-                    <button type="submit" class="btn btn-primary">Modifier</button>
+                    <button type="submit" class="btn btn-success">Modifier</button>
                 </div>
 
             {{ form_end(form) }}

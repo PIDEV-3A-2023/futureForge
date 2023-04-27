@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+</br>
 <div style="display: flex;align-items:center;justify-content: center ; ">
 <style>
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
@@ -9,6 +10,12 @@
     <div class="bg-light rounded h-100 p-4">
  <i style="font-size: 50px; color: #333; cursor: pointer;" class="ri-arrow-left-s-line"></i>
         <h6 class="mb-4"> Category Table</h6>
+         <form method="post" class="mb-3">
+        <div class="input-group">
+            <input type="text" class="form-control" name="searchTerm" placeholder="Search" value="{{ searchTerm ?? '' }}">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </form>
         <table class="table">
             <thead>
                 <tr>
@@ -22,11 +29,12 @@
             <tbody>
                 {% for category in categories %}
                     <tr>
-                        <td>{{ category.getNomCateg() }}</td>
+                        <td>{{ category.getNomCateg() }}</td>    
+                        
                         <td>{{ category.getDescription() }}</td>
                         <td>
                             {% if category.getPhoto() %}
-                                <img src="{{ category.getPhoto() }}" alt="{{ category.getNomCateg() }}" width="100">
+                                <img src="{{ asset('Category_images_directory/' ~ category.photo) }}" alt="{{ category.photo }}">
                             {% else %}
                                 Aucune photo disponible
                             {% endif %}
@@ -37,14 +45,18 @@
                         <td>
                             <a  class="btn btn-danger" href="{{path('supp_category',{'id':category.id})}}">suppression</a>
                         </td>
+                        
                     </tr>
                 {% endfor %}  <!-- closing tag for the for loop -->
             </tbody>
         </table>
+   </div>
+            </div>
+
+        </div>
+
     </div>
-</div>
-</div>
-
-
+     </div>
+     
 
 {% endblock %}

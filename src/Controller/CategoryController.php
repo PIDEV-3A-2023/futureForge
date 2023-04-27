@@ -8,9 +8,23 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Category;
 use App\Form\CategoryType;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class CategoryController extends AbstractController
 {
+    protected function json_response($data)
+    {
+        return new JsonResponse($data);
+    }
+
+    
+     
+
+
+    
+
     
      /**
      * @Route("/admin", name="display_admin")
@@ -26,16 +40,40 @@ class CategoryController extends AbstractController
     /**
      * @Route("/Ajoutercategory", name="add_category")
      */
-    public function addcategory(Request $request): Response
+    public function addcategory(Request $request , EntityManagerInterface $entityManager): Response
     {
         $category = new Category();
         $form = $this->createForm(CategoryType::class, $category);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $photoFile= $form->get('photo')->getData();
+
+            // this condition is needed because the 'brochure' field is not required
+            // so the PDF file must be processed only when a file is uploaded
+            if ($photoFile) {
+                $originalFilename = pathinfo($photoFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $newFilename = $originalFilename.'-'.uniqid().'.'.$photoFile->guessExtension();
+
+                // Move the file to the directory where brochures are stored
+                try {
+                    $photoFile->move(
+                        $this->getParameter('Category_images_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    // ... handle exception if something happens during file upload
+                }
+
+                // updates the 'brochureFilename' property to store the PDF file name
+                // instead of its contents
+                $category->setphoto($newFilename);
+            }
+
             $em = $this->getDoctrine()->getManager();
             $em->persist($category);
             $em->flush();
             return $this->redirectToRoute('display_category');
+            
         }
         return $this->render('category/Ajoutercategory.html.twig', ['c' => $form->createView()]);
     }
@@ -85,4 +123,28 @@ public function modifiercategory(Request $request, $id): Response
 
         return $this->redirectToRoute('display_category');
     }
+    public function showCategory(Request $request)
+    {
+        $searchTerm = $request->query->get('search') ?? '';
+        $categories = [];
+        $app = $this->getDoctrine()->getRepository(App::class)->findOneBy([]);
+        
+        if (!empty($searchTerm)) {
+            $categories = $this->getDoctrine()->getRepository(Category::class)
+                ->createQueryBuilder('c')
+                ->where('c.name LIKE :searchTerm')
+                ->setParameter('searchTerm', '%'.$searchTerm.'%')
+                ->getQuery()
+                ->getResult();
+        } else {
+            $categories = $this->getDoctrine()->getRepository(Category::class)->findAll();
+        }
+        
+        return $this->render('category/Affichagecategory.html.twig', [
+            'categories' => $categories,
+            'app' => $app,
+            'searchTerm' => $searchTerm,
+        ]);
+    }
+    
 }
