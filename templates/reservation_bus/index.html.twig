@@ -18,7 +18,7 @@
 	    						<span class="cat">{{ reservation_bu.numPlace }}</span>
                             </div>
                             <div style="margin-right: 0; margin-left: auto;">
-	    						<p class="price ml-auto">{{ reservation_bu.date }}</p>
+	    						<p class="price ml-auto">{{ reservation_bu.date ? reservation_bu.date|date('Y-m-d') : '' }}</p>
 	    						<p class="price ml-auto">{{ reservation_bu.destination }}</p>
                             </div>
     						</div>

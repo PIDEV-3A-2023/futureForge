@@ -9,10 +9,18 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Service\TwilioSmsService;
 
 #[Route('/reservation/covoiturage')]
 class ReservationCovoiturageController extends AbstractController
 {
+    private $twilioSmsService;
+
+    public function __construct(TwilioSmsService $twilioSmsService)
+    {
+        $this->twilioSmsService = $twilioSmsService;
+    }
+
     #[Route('/', name: 'app_reservation_covoiturage_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
@@ -35,6 +43,11 @@ class ReservationCovoiturageController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($reservationCovoiturage);
             $entityManager->flush();
+
+            $message = "Hello " . $reservationCovoiturage->getNom() . " " . $reservationCovoiturage->getPrenom() . ", your reservation for " . $reservationCovoiturage->getNbrPlace() . " places, from " . $reservationCovoiturage->getPntRencontre() . " to " . $reservationCovoiturage->getDistination() . " has been added with the date " . $reservationCovoiturage->getDate()->format('d-m-Y') . ". Thank you for your trust.";
+            $phoneNumber = "+21694392948"; // user's phone number
+
+            $this->twilioSmsService->sendSms($message, $phoneNumber);
 
             return $this->redirectToRoute('app_reservation_covoiturage_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -74,7 +87,7 @@ class ReservationCovoiturageController extends AbstractController
     #[Route('/{idReservation}', name: 'app_reservation_covoiturage_delete', methods: ['POST'])]
     public function delete(Request $request, ReservationCovoiturage $reservationCovoiturage, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$reservationCovoiturage->getIdReservation(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $reservationCovoiturage->getIdReservation(), $request->request->get('_token'))) {
             $entityManager->remove($reservationCovoiturage);
             $entityManager->flush();
         }

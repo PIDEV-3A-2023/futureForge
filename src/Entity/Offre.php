@@ -237,5 +237,10 @@ class Offre
         return $this;
     }
 
+    public function __toString()
+    {
+        return (string) $this->prenomChauff . " | " . $this->numChauff;
+    }
+
 
 }

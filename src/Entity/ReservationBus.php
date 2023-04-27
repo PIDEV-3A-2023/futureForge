@@ -58,14 +58,10 @@ class ReservationBus
     private $numPlace;
 
     /**
-     * @var string
+     * @var \DateTime
      *
-     * @ORM\Column(name="date", type="string", length=255, nullable=false)
+     * @ORM\Column(name="date", type="date", length=255, nullable=false)
      * @Assert\NotBlank()
-     * @Assert\Regex(
-     *     pattern="/^(?P<year>\d{4})-(?P<month>0[1-9]|1[0-2])-(?P<day>0[1-9]|[12][0-9]|3[01])$/",
-     *     message="The date string should be in the format of YYYY-MM-DD and must be a valid date"
-     * )
      */
     private $date;
 
@@ -127,12 +123,12 @@ class ReservationBus
         return $this;
     }
 
-    public function getDate(): ?string
+    public function getDate(): ?\DateTimeInterface
     {
         return $this->date;
     }
 
-    public function setDate(string $date): self
+    public function setDate(\DateTimeInterface $date): self
     {
         $this->date = $date;
 

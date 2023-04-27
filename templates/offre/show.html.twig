@@ -49,6 +49,34 @@
 				<th>PlacesDispo</th>
 				<td>{{ offre.placesDispo }}</td>
 			</tr>
+			<tr>
+				<th>Avis</th>
+				<td>
+					{% if avgRate <= 0 %}
+						<span class="fa fa-star" style="color: #c2c0c0;"></span>
+					{% else %}
+						{% for i in 1..avgRate %}
+							<span class="fa fa-star checked" style="color: #01d28e;"></span>
+						{% endfor %}
+					{% endif %}
+				</td>
+			</tr>
+			<tr>
+				<th>Avis des clients</th>
+				<td>
+					<ul>
+						{% for avi in avis %}
+							<li>
+								{{ avi.idUser }}
+								<br>
+								{{ avi.rate }}
+								<br>
+								{{ avi.descriptionAvis }}
+							</li>
+						{% endfor %}
+					</ul>
+				</td>
+			</tr>
 		</tbody>
 	</table>
 

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\ReservationBus;
 use App\Form\ReservationBusType;
+use App\Repository\ReservationBusRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,15 +14,30 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/admin/reservation/bus')]
 class ReservationBusAdminController extends AbstractController
 {
+    #[Route('/search', name: 'reservation_bus_search')]
+    public function search(Request $request, ReservationBusRepository $reservation_busRepository): Response
+    {
+        $query = $request->query->get('q');
+        $reservation_bus = $reservation_busRepository->findByNom($query);
+
+        return $this->render('reservation_busAdmin/search.html.twig', [
+            'reservation_buses' => $reservation_bus,
+            'query' => $query,
+        ]);
+    }
+
     #[Route('/', name: 'admin_reservation_bus_index', methods: ['GET'])]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(Request $request, ReservationBusRepository $reservation_busRepository, EntityManagerInterface $entityManager): Response
     {
         $reservationBuses = $entityManager
             ->getRepository(ReservationBus::class)
             ->findAll();
+        $query = $request->query->get('q');
+        $reservationBuses = $reservation_busRepository->findByNom($query);
 
         return $this->render('reservation_busAdmin/index.html.twig', [
             'reservation_buses' => $reservationBuses,
+            'query' => $query,
         ]);
     }
 

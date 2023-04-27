@@ -6,7 +6,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-
+use App\Repository\AbonnementRepository;
 /**
  * Abonnement
  *
@@ -53,6 +53,7 @@ class Abonnement
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=50, nullable=false)
+     * @Assert\NotBlank()
      * @Assert\Email()
      */
     private $email;
@@ -126,9 +127,18 @@ class Abonnement
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="idOffre", referencedColumnName="id")
      * })
-     * @Assert\NotBlank()
      */
     private $idOffre;
+
+    /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id_user")
+     * })
+     */
+    private $user;
 
     public function getId(): ?int
     {
@@ -263,6 +273,18 @@ class Abonnement
     public function setIdOffre(?Offre2 $idOffre): self
     {
         $this->idOffre = $idOffre;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

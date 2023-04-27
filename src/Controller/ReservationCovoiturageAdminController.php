@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\ReservationCovoiturage;
 use App\Form\ReservationCovoiturageType;
+use App\Repository\ReservationCovoiturageRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,15 +14,30 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/admin/reservation/covoiturage')]
 class ReservationCovoiturageAdminController extends AbstractController
 {
+    #[Route('/search', name: 'reservation_covoiturage_search')]
+    public function search(Request $request, ReservationCovoiturageRepository $reservation_covoiturageRepository): Response
+    {
+        $query = $request->query->get('q');
+        $reservation_covoiturage = $reservation_covoiturageRepository->findByNom($query);
+
+        return $this->render('reservation_covoiturageAdmin/search.html.twig', [
+            'reservation_covoiturages' => $reservation_covoiturage,
+            'query' => $query,
+        ]);
+    }
+
     #[Route('/', name: 'admin_reservation_covoiturage_index', methods: ['GET'])]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(Request $request, ReservationCovoiturageRepository $reservation_covoiturageRepository, EntityManagerInterface $entityManager): Response
     {
         $reservationCovoiturages = $entityManager
             ->getRepository(ReservationCovoiturage::class)
             ->findAll();
+        $query = $request->query->get('q');
+        $reservationCovoiturages = $reservation_covoiturageRepository->findByNom($query);
 
         return $this->render('reservation_covoiturageAdmin/index.html.twig', [
             'reservation_covoiturages' => $reservationCovoiturages,
+            'query' => $query,
         ]);
     }
 
