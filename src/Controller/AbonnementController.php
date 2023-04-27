@@ -60,7 +60,7 @@ class AbonnementController extends AbstractController
             
             // Create a new Email object and set its properties
             $email = (new Email())
-            ->from('fourat.abdellatif@esprit.tn')
+            ->from('ghada.bensaidmeddeb@esprit.tn')
             ->to($abonnement->getEmail())
             ->subject('Abonnement confirmé')
             ->html(
