@@ -18,8 +18,8 @@
         <div><span>Identifiant: </span> {{ abonnement.identifiant }}  </div>
         <div><span>CIN: </span> {{ abonnement.cin }}  </div>
         <div><span>Type d'offre: </span> {{ abonnement.type }}  </div>
-        <div><span>Etat: </span> {{ abonnement.dated ? abonnement.dated|date('Y-m-d') : '' }}  </div>
-        <div><span>Etat: </span> {{ abonnement.datef ? abonnement.datef|date('Y-m-d') : '' }}  </div>
+        <div><span>Date Debut: </span> {{ abonnement.dated ? abonnement.dated|date('Y-m-d') : '' }}  </div>
+        <div><span>Date Fin: </span> {{ abonnement.datef ? abonnement.datef|date('Y-m-d') : '' }}  </div>
         <div><span>Offre: </span> {{ abonnement.idOffre.nom }}  </div>
         <hr></hr>
     </div>

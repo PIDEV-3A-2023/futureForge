@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Abonnement;
 use App\Entity\Offre2;
+use App\Entity\User;
 use App\Form\AbonnementType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,9 +27,16 @@ class AbonnementController extends AbstractController
     #[Route('/', name: 'app_abonnement_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
+        $user = $entityManager->find(User::class, 1);//$user=$this->getUser();
         $abonnements = $entityManager
             ->getRepository(Abonnement::class)
             ->findAll();
+
+        foreach ($abonnements as $key => $abonnement) {
+            if ($abonnement->getUser() != $user) {
+                unset($abonnements[$key]);
+            }
+        }
 
         return $this->render('abonnement/index.html.twig', [
             'abonnements' => $abonnements,
@@ -38,6 +46,7 @@ class AbonnementController extends AbstractController
     #[Route('/new/{id}', name: 'app_abonnement_new', methods: ['GET', 'POST'])]
     public function new(Offre2 $offre2, Request $request, EntityManagerInterface $entityManager): Response
     {
+        $user = $entityManager->find(User::class, 1); //$user=$this->getUser();
         $abonnement = new Abonnement();
         $form = $this->createForm(AbonnementType::class, $abonnement);
         $form->handleRequest($request);
@@ -54,6 +63,9 @@ class AbonnementController extends AbstractController
             $abonnement->setType($offre2->getType());
             $abonnement->setPrix(120 - (120 * $offre2->getReduction() / 100));
             $abonnement->setIdOffre($offre2);
+            $abonnement->setDated($offre2->getDated());
+            $abonnement->setDatef($offre2->getDatef());
+            $abonnement->setUser($user);
             // dd($abonnement);
             $entityManager->persist($abonnement);
             $entityManager->flush();

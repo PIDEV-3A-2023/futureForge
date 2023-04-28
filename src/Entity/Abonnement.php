@@ -101,15 +101,13 @@ class Abonnement
      * @var \DateTime
      *
      * @ORM\Column(name="dateD", type="date", nullable=false)
-     * @Assert\NotBlank()
      */
     private $dated;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="dateF", type="date", nullable=false)
-     * @Assert\NotBlank()
+     * @ORM\Column(name="dateF", type="date", nullable=false)    
      */
     private $datef;
 

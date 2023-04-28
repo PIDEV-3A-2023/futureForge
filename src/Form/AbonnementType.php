@@ -21,7 +21,7 @@ class AbonnementType extends AbstractType
             ->add('identifiant')
             ->add('cin')
             // ->add('type')
-            ->add('dated', DateType::class, [
+          /*  ->add('dated', DateType::class, [
                 'widget' => 'single_text',
                 'html5' => true,
                 'attr' => ['class' => 'datepicker'],
@@ -30,7 +30,7 @@ class AbonnementType extends AbstractType
                 'widget' => 'single_text',
                 'html5' => true,
                 'attr' => ['class' => 'datepicker'],
-            ])
+            ])*/
             // ->add('prix')
             // ->add('idOffre', null, [
             //     'label' => 'Offre',

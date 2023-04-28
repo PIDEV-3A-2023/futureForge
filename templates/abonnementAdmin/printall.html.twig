@@ -21,9 +21,14 @@
 					<tr>
 						<th>Nom</th>
 						<th>Prenom</th>
+						<th>Image</th>
 						<th>Email</th>
-						<th>Description</th>
-						<th>Etat</th>
+						<th>Identifiant</th>
+						<th>Cin</th>
+						<th>Type</th>
+						<th>Date Debut</th>
+						<th>Date fin</th>
+						<th>Prix</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -32,7 +37,7 @@
 							<td>{{ abonnement.nom }}</td>
 							<td>{{ abonnement.prenom }}</td>
 							<td>
-								<img style="height: 100px; width: 100px; object-fit: cover;" src="{{ asset('https://127.0.0.1:8004/uploads/' ~ abonnement.image) }}"/></td>
+								<img style="height: 100px; width: 100px; object-fit: cover;" src="{{ asset('http://127.0.0.1:8000/uploads/' ~ abonnement.image) }}"/></td>
 							<td>{{ abonnement.email }}</td>
 							<td>{{ abonnement.identifiant }}</td>
 							<td>{{ abonnement.cin }}</td>
