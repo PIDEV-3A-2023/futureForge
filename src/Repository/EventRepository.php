@@ -115,6 +115,7 @@ public function findBySearchCriteria(array $criteria): array
     
         return $resultats;
     }
+    
 
     public function counteventByMonth()
     {

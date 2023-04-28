@@ -15,6 +15,7 @@ use App\Form\RechercheeventType;
 
 
 
+
 class EventController extends AbstractController
 {
     /**
@@ -58,18 +59,26 @@ public function addevent(Request $request): Response
     ]);
 }
     
-    /**
+   /**
  * @Route("/afficher-events", name="display_event")
  */
-public function afficherEvents(): Response
-{
-    $em = $this->getDoctrine()->getManager();
-    $events = $this->getDoctrine()->getRepository(Event::class)->findAllJoinedToCategory();
-    
+public function afficherEvents(Request $request): Response
+{   $sort_by = $request->query->get('sort_by', 'date');
+    $order = $request->query->get('order', 'asc');
+    $events = $this->getDoctrine()->getRepository(Event::class)
+    ->findBy([], [$sort_by => $order]);
+
+
+    // ... rest of the controller code
+
     return $this->render('event/Affichageevent.html.twig', [
+       
+        'sort_by' => $sort_by,
+        'sort_order' => $order,
         'events' => $events,
     ]);
 }
+
 /**
      * @Route("/modifevent/{id}", name="modify_event")
      */
@@ -150,4 +159,5 @@ $form = $this->createForm(EventType::class, $event);
                     
                 ]);
             }
+             
 }

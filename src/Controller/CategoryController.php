@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+
 class CategoryController extends AbstractController
 {
     protected function json_response($data)
@@ -33,6 +34,8 @@ class CategoryController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
         $categories = $em->getRepository(Category::class)->findAll();
+        
+        $sortOrder = $request->query->get('order', 'desc');
         return $this->render('Admin/index.html.twig', [
             'categories' => $categories,
         ]);
@@ -123,29 +126,7 @@ public function modifiercategory(Request $request, $id): Response
 
         return $this->redirectToRoute('display_category');
     }
-    public function showCategory(Request $request)
-    {
-        $searchTerm = $request->query->get('search') ?? '';
-        $categories = [];
-        $app = $this->getDoctrine()->getRepository(App::class)->findOneBy([]);
-        
-        if (!empty($searchTerm)) {
-            $categories = $this->getDoctrine()->getRepository(Category::class)
-                ->createQueryBuilder('c')
-                ->where('c.name LIKE :searchTerm')
-                ->setParameter('searchTerm', '%'.$searchTerm.'%')
-                ->getQuery()
-                ->getResult();
-        } else {
-            $categories = $this->getDoctrine()->getRepository(Category::class)->findAll();
-        }
-        
-        return $this->render('category/Affichagecategory.html.twig', [
-            'categories' => $categories,
-            'app' => $app,
-            'searchTerm' => $searchTerm,
-        ]);
-    }
+   
     
      }
     

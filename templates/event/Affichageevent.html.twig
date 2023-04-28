@@ -8,7 +8,7 @@
    <div class="row">
 <div class="bg-light rounded h-100 p-4">
                 
-                    <h5 class=class="mb-4">  event Table </h5>
+                    <h5 class=class="mb-800">  event Table </h5>
 
      <table class="table">
         <thead>
@@ -20,7 +20,12 @@
                 <th>categorie</th>
                 <th>Modification</th>
                 <th>suppression</th>
-                
+                 {% if sort_by == 'date' %}
+
+                            <a class="btn btn-primary me-2" href="{{ path('display_event', { sort_by: 'nom', order: sort_order }) }}">Trier par nom</a>
+                        {% else %}
+                            <a class="btn btn-primary me-2" href="{{ path('display_event', { sort_by: 'date', order: sort_order }) }}">Trier par Date </a>
+                        {% endif %}
             </tr>
         </thead>
         <tbody>
@@ -32,6 +37,8 @@
                     <td>{{ event.date|date('d/m/Y') }}</td>     
    <td>{{ event.getCategorie().getNomCateg() ?? "" }}</td>
 
+                        
+                      
                     <td>
                         <a class="btn btn-success" href="{{ path('modify_event', {'id': event.id}) }}">Modifier</a>
                     </td>
