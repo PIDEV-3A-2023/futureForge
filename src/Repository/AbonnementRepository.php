@@ -38,6 +38,33 @@ class AbonnementRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+    
+    public function findByNom($nom)
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.nom LIKE :nom')
+            ->setParameter('nom', '%' . $nom . '%')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function sortByAscDate(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->orderBy('c.dated', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+    
+    public function sortByDescDate(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->orderBy('c.dated', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 
     // public function findByNom($query)
     // {
