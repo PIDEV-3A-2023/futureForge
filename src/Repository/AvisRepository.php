@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\Abonnement;
+use App\Entity\Avis;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Abonnement>
+ * @extends ServiceEntityRepository<Avis>
  *
- * @method Abonnement|null find($id, $lockMode = null, $lockVersion = null)
- * @method Abonnement|null findOneBy(array $criteria, array $orderBy = null)
- * @method Abonnement[]    findAll()
- * @method Abonnement[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Avis|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Avis|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Avis[]    findAll()
+ * @method Avis[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class AbonnementRepository extends ServiceEntityRepository
+class AvisRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Abonnement::class);
+        parent::__construct($registry, Avis::class);
     }
 
-    public function save(Abonnement $entity, bool $flush = false): void
+    public function save(Avis $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class AbonnementRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(Abonnement $entity, bool $flush = false): void
+    public function remove(Avis $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -38,29 +38,20 @@ class AbonnementRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
-    
-    public function findByNom($nom)
-    {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.nom LIKE :nom')
-            ->setParameter('nom', '%' . $nom . '%')
-            ->getQuery()
-            ->getResult();
-    }
 
-    public function sortByAscDate(): array
+    public function sortByAscRating(): array
     {
         return $this->createQueryBuilder('c')
-            ->orderBy('c.dated', 'ASC')
+            ->orderBy('c.rate', 'ASC')
             ->getQuery()
             ->getResult()
         ;
     }
     
-    public function sortByDescDate(): array
+    public function sortByDescRating(): array
     {
         return $this->createQueryBuilder('c')
-            ->orderBy('c.dated', 'DESC')
+            ->orderBy('c.rate', 'DESC')
             ->getQuery()
             ->getResult()
         ;
@@ -116,7 +107,7 @@ class AbonnementRepository extends ServiceEntityRepository
     // }
 
 //    /**
-//     * @return Abonnement[] Returns an array of Abonnement objects
+//     * @return Avis[] Returns an array of Avis objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -130,7 +121,7 @@ class AbonnementRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Abonnement
+//    public function findOneBySomeField($value): ?Avis
 //    {
 //        return $this->createQueryBuilder('c')
 //            ->andWhere('c.exampleField = :val')

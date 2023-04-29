@@ -39,49 +39,40 @@ class ReservationCovoiturageRepository extends ServiceEntityRepository
         }
     }
 
-    public function findByNom($query)
-    {
-        $qb = $this->createQueryBuilder('e');
-        $qb->where($qb->expr()->orX(
-            $qb->expr()->like('e.nom', ':query'),
-            $qb->expr()->like('e.prenom', ':query')
-        ));
-        $qb->setParameter('query', '%'.$query.'%');
+    // public function findByNom($query)
+    // {
+    //     $qb = $this->createQueryBuilder('e');
+    //     $qb->where($qb->expr()->orX(
+    //         $qb->expr()->like('e.nom', ':query'),
+    //         $qb->expr()->like('e.prenom', ':query')
+    //     ));
+    //     $qb->setParameter('query', '%'.$query.'%');
 
-        return $qb->getQuery()->getResult();
+    //     return $qb->getQuery()->getResult();
+    // }
+    
+    public function findByNom($nom)
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.nom LIKE :nom')
+            ->setParameter('nom', '%' . $nom . '%')
+            ->getQuery()
+            ->getResult();
     }
 
-    public function sortByAscEtat(): array
+    public function sortByAscNbrPlace(): array
     {
         return $this->createQueryBuilder('c')
-            ->orderBy('c.etat', 'ASC')
+            ->orderBy('c.nbrPlace', 'ASC')
             ->getQuery()
             ->getResult()
         ;
     }
     
-    public function sortByDescEtat(): array
+    public function sortByDescNbrPlace(): array
     {
         return $this->createQueryBuilder('c')
-            ->orderBy('c.etat', 'DESC')
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-
-    public function sortByAscNom(): array
-    {
-        return $this->createQueryBuilder('c')
-            ->orderBy('c.nom', 'ASC')
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    
-    public function sortByDescNom(): array
-    {
-        return $this->createQueryBuilder('c')
-            ->orderBy('c.nom', 'DESC')
+            ->orderBy('c.nbrPlace', 'DESC')
             ->getQuery()
             ->getResult()
         ;

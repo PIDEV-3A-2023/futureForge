@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -18,6 +19,33 @@ use Dompdf\Options;
 #[Route('/admin/abonnement')]
 class AbonnementAdminController extends AbstractController
 {
+    private $abonnementRepository;
+
+    public function __construct(AbonnementRepository $abonnementRepository)
+    {
+        $this->abonnementRepository = $abonnementRepository;
+    }
+    
+    #[Route('/sortByAscDate', name: 'sort_by_asc_date')]
+    public function sortAscDate(AbonnementRepository $abonnementRepository, Request $request)
+    {
+        $abonnements = $abonnementRepository->sortByAscDate();
+    
+        return $this->render("abonnementAdmin/index.html.twig",[
+            'abonnements' => $abonnements,
+        ]);
+    }
+    
+    #[Route('/sortByDescDate', name: 'sort_by_desc_date')]
+    public function sortDescDate(AbonnementRepository $abonnementRepository, Request $request)
+    {
+        $abonnements = $abonnementRepository->sortByDescDate();
+    
+        return $this->render("abonnementAdmin/index.html.twig",[
+            'abonnements' => $abonnements,
+        ]);
+    }
+
     #[Route('/', name: 'admin_abonnement_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
@@ -126,5 +154,36 @@ class AbonnementAdminController extends AbstractController
         ]);
 
         return new Response();
+    }
+
+    public function searchAbonnement(Request $request)
+    {
+        $searchTerm = $request->query->get('searchTerm');
+
+        if ($searchTerm === '') {
+            $abonnements = $this->abonnementRepository->findAll();
+        } else {
+            $abonnements = $this->abonnementRepository->findByNom($searchTerm);
+        }
+
+        $response = [];
+        foreach ($abonnements as $abonnement) {
+            $response[] = [
+                'nom' => $abonnement->getNom(),
+                'prenom' => $abonnement->getPrenom(),
+                'image' => $abonnement->getImage(),
+                'email' => $abonnement->getEmail(),
+                'identifiant' => $abonnement->getIdentifiant(),
+                'cin' => $abonnement->getCin(),
+                'type' => $abonnement->getType(),
+                'dated' => $abonnement->getDated() ? $abonnement->getDated()->format('Y-m-d') : null,
+                'datef' => $abonnement->getDatef() ? $abonnement->getDatef()->format('Y-m-d') : null,
+                'prix' => $abonnement->getPrix(),
+                'showUrl' => $this->generateUrl('admin_abonnement_show', ['id' => $abonnement->getId()]),
+                'editUrl' => $this->generateUrl('print_abonnement', ['id' => $abonnement->getId()])
+            ];
+        }
+
+        return new JsonResponse($response);
     }
 }

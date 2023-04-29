@@ -10,21 +10,49 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[Route('/admin/reservation/covoiturage')]
 class ReservationCovoiturageAdminController extends AbstractController
 {
-    #[Route('/search', name: 'reservation_covoiturage_search')]
-    public function search(Request $request, ReservationCovoiturageRepository $reservation_covoiturageRepository): Response
-    {
-        $query = $request->query->get('q');
-        $reservation_covoiturage = $reservation_covoiturageRepository->findByNom($query);
+    private $reservationCovoiturageRepository;
 
-        return $this->render('reservation_covoiturageAdmin/search.html.twig', [
-            'reservation_covoiturages' => $reservation_covoiturage,
-            'query' => $query,
+    public function __construct(ReservationCovoiturageRepository $reservationCovoiturageRepository)
+    {
+        $this->reservationCovoiturageRepository = $reservationCovoiturageRepository;
+    }
+    
+    #[Route('/sortByAscNbrPlace', name: 'sort_by_asc_nbrplace')]
+    public function sortAscNbrPlace(ReservationCovoiturageRepository $reservationCovoiturageRepository, Request $request)
+    {
+        $reservationCovoiturages = $reservationCovoiturageRepository->sortByAscNbrPlace();
+    
+        return $this->render("reservation_covoiturageAdmin/index.html.twig",[
+            'reservation_covoiturages' => $reservationCovoiturages,
         ]);
     }
+    
+    #[Route('/sortByDescNbrPlace', name: 'sort_by_desc_nbrplace')]
+    public function sortDescNbrPlace(ReservationCovoiturageRepository $reservationCovoiturageRepository, Request $request)
+    {
+        $reservationCovoiturages = $reservationCovoiturageRepository->sortByDescNbrPlace();
+    
+        return $this->render("reservation_covoiturageAdmin/index.html.twig",[
+            'reservation_covoiturages' => $reservationCovoiturages,
+        ]);
+    }
+
+    // #[Route('/search', name: 'reservation_covoiturage_search')]
+    // public function search(Request $request, ReservationCovoiturageRepository $reservation_covoiturageRepository): Response
+    // {
+    //     $query = $request->query->get('q');
+    //     $reservation_covoiturage = $reservation_covoiturageRepository->findByNom($query);
+
+    //     return $this->render('reservation_covoiturageAdmin/search.html.twig', [
+    //         'reservation_covoiturages' => $reservation_covoiturage,
+    //         'query' => $query,
+    //     ]);
+    // }
 
     #[Route('/', name: 'admin_reservation_covoiturage_index', methods: ['GET'])]
     public function index(Request $request, ReservationCovoiturageRepository $reservation_covoiturageRepository, EntityManagerInterface $entityManager): Response
@@ -96,5 +124,32 @@ class ReservationCovoiturageAdminController extends AbstractController
         }
 
         return $this->redirectToRoute('admin_reservation_covoiturage_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    public function searchResCovoiturage(Request $request)
+    {
+        $searchTerm = $request->query->get('searchTerm');
+
+        if ($searchTerm === '') {
+            $reservationCovoiturages = $this->reservationCovoiturageRepository->findAll();
+        } else {
+            $reservationCovoiturages = $this->reservationCovoiturageRepository->findByNom($searchTerm);
+        }
+
+        $response = [];
+        foreach ($reservationCovoiturages as $reservation) {
+            $response[] = [
+                'nom' => $reservation->getNom(),
+                'prenom' => $reservation->getPrenom(),
+                'pntRencontre' => $reservation->getPntRencontre(),
+                'distination' => $reservation->getDistination(),
+                'nbrPlace' => $reservation->getNbrPlace(),
+                'date' => $reservation->getDate() ? $reservation->getDate()->format('Y-m-d') : null,
+                'showUrl' => $this->generateUrl('admin_reservation_covoiturage_show', ['idReservation' => $reservation->getIdReservation()]),
+                'editUrl' => $this->generateUrl('admin_reservation_covoiturage_edit', ['idReservation' => $reservation->getIdReservation()])
+            ];
+        }
+
+        return new JsonResponse($response);
     }
 }

@@ -49,6 +49,15 @@ class OffreRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+    
+    public function findByNom($prenomChauff)
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.prenomChauff LIKE :prenomChauff')
+            ->setParameter('prenomChauff', '%' . $prenomChauff . '%')
+            ->getQuery()
+            ->getResult();
+    }
 
 //    /**
 //     * @return Offre[] Returns an array of Offre objects
