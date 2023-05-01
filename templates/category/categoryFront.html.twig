@@ -5,17 +5,17 @@
 </br>
  <div class="container my-5">
     <div class="row justify-content-center">
-      {% for category in categories %}
+      {% for categories in categories %}
         <div class="col-md-8 my-9">
           <div class="card">
             <div class="card-header">
-              <h5 class="card-title">{{ category.getNomCateg() }}</h5>
+              <h5 class="card-title">{{ categories.getNom() }}</h5>
             </div>
             <div class="card-body">
-              <p class="card-text">{{ category.getDescription() }}</p>
+              <p class="card-text">{{ categories.getDescription() }}</p>
                                    <td>
-                                    {% if category.getPhoto() %}
-                                   <img src="{{ asset('Category_images_directory/' ~ category.photo) }}" alt="{{ category.photo }}">
+                                    {% if categories.getPhoto() %}
+                                   <img src="{{ asset('Category_images_directory/' ~ categories.photo) }}" alt="{{ categories.photo }}">
                                    {% else %}
                                       Aucune photo disponible
                                     {% endif %}

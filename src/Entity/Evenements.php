@@ -2,66 +2,67 @@
 
 namespace App\Entity;
 
-use App\Repository\EventRepository;
+use App\Repository\EvenementsRepository;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Category;
-use App\Entity\Event;
 use Symfony\Component\Validator\Constraints as Assert;
-
+use App\Entity\Categories;
+use App\Entity\Evenements;
 
 /**
- * @ORM\Entity(repositoryClass=EventRepository::class)
+ * @ORM\Entity(repositoryClass=EvenementsRepository::class)
  */
-class Event
+class Evenements
 {
-    
-   /**
+    /**
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(message="Le nom de l'événement ne peut pas être vide")
+     *  @Assert\NotBlank(message="Le nom de l'événement ne peut pas être vide")
      * @Assert\Length(max=255, maxMessage="Le nom de l'événement doit faire au maximum {{ limit }} caractères")
      */
+    
     private $nom;
 
-     /**
+    /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(message="Le type de l'événement ne peut pas être vide")
+     *  @Assert\NotBlank(message="Le type de l'événement ne peut pas être vide")
      * @Assert\Length(max=255, maxMessage="Le type de l'événement doit faire au maximum {{ limit }} caractères")
      */
     private $type;
-  /**
+
+    /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="La description de l'événement ne peut pas être vide")
      * @Assert\Length(max=255, maxMessage="La description de l'événement doit faire au maximum {{ limit }} caractères")
      */
     private $description;
 
-
-   /**
+    /**
      * @ORM\Column(type="date")
      * @Assert\NotBlank(message="La date de l'événement ne peut pas être vide")
      * @Assert\GreaterThanOrEqual("today", message="La date de l'événement doit être égale ou supérieure à aujourd'hui")
      */
     private $date;
 
-
-  /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Category")
+      /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Categories")
      * @ORM\JoinColumn(name="categorie_id", referencedColumnName="id")
      * @Assert\NotNull(message="La catégorie de l'événement ne peut pas être vide")
+    
      */
-    private $categorie;
+    private $Categories_id;
 
     public function getId(): ?int
     {
         return $this->id;
     }
+
+   
 
     public function getNom(): ?string
     {
@@ -111,14 +112,14 @@ class Event
         return $this;
     }
 
-    public function getCategorie(): ?Category
+    public function getCategoriesId(): ?Categories
     {
-        return $this->categorie;
+        return $this->Categories_id;
     }
 
-    public function setCategorie(?Category $categorie): self
+    public function setCategoriesId(?Categories $Categories_id): self
     {
-        $this->categorie = $categorie;
+        $this->Categories_id = $Categories_id;
 
         return $this;
     }

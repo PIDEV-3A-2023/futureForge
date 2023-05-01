@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Form;
-use App\Entity\Category;
+use App\Entity\Categories;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -9,7 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Validator\Constraints\Length;
-class EventType extends AbstractType
+class EvenementsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -19,9 +19,9 @@ class EventType extends AbstractType
             ->add('description')
                 
             ->add('date')
-            ->add('categorie', EntityType::class, [
-                'class' => Category::class,
-                'choice_label' => 'nom_categ',
+            ->add('Categories_id', EntityType::class, [
+                'class' => Categories::class,
+                'choice_label' => 'nom',
             ]);
            
         ;

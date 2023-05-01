@@ -8,10 +8,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use App\Entity\Category;
+use App\Entity\Categories;
 
 
-class RechercheeventType extends AbstractType
+class RechercherevenementType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -19,9 +19,9 @@ class RechercheeventType extends AbstractType
              ->add('nom', TextType::class, [
                 'required' => false,
             ])
-            ->add('categorie', EntityType::class, [
-                'class' => Category::class,
-                'choice_label' => 'nom_categ',
+            ->add('Categories_id', EntityType::class, [
+                'class' => Categories::class,
+                'choice_label' => 'nom',
                 'required' => false,
             ])
             ->add('type', TextType::class, [

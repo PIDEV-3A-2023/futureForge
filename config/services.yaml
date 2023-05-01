@@ -5,11 +5,8 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
 
-  Category_images_directory: '%kernel.project_dir%/public/Category_images_directory'
+   Category_images_directory: '%kernel.project_dir%/public/Category_images_directory'
 services:
-
-    App\Form\TypeChoixType:
-        tags: ['form.type']
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.

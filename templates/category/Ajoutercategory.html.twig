@@ -16,9 +16,9 @@
                    {{ form_start(c, {attr: {novalidate: 'novalidate'}}) }}
                    <div class="form-group">
     <label for="inputText" class="col-sm-8 col-form-label">Nom categorie</label>
-        {{ form_widget(c.nom_categ, {'attr': {'class': 'form-control'}}) }}
+        {{ form_widget(c.nom, {'attr': {'class': 'form-control'}}) }}
     <div style="color: red; list-style: none;">
-    {{ form_errors(c.nom_categ, {'attr': {'class': 'text-danger'}}) }}
+    {{ form_errors(c.nom, {'attr': {'class': 'text-danger'}}) }}
 
     </div>
     </div>

@@ -6,14 +6,16 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
-use App\Entity\Category;
-use App\Form\CategoryType;
+use App\Entity\Categories;
+use App\Form\CategoriesType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Form\RecherchercategorieType;
+use App\Repository\CategoriesRepository;
 
 
-class CategoryController extends AbstractController
+class CategoriesController extends AbstractController
 {
     protected function json_response($data)
     {
@@ -33,7 +35,7 @@ class CategoryController extends AbstractController
     public function indexAdmin(): Response
     {
         $em = $this->getDoctrine()->getManager();
-        $categories = $em->getRepository(Category::class)->findAll();
+        $categories = $em->getRepository(Categories::class)->findAll();
         
         $sortOrder = $request->query->get('order', 'desc');
         return $this->render('Admin/index.html.twig', [
@@ -45,8 +47,8 @@ class CategoryController extends AbstractController
      */
     public function addcategory(Request $request , EntityManagerInterface $entityManager): Response
     {
-        $category = new Category();
-        $form = $this->createForm(CategoryType::class, $category);
+        $categories = new Categories();
+        $form = $this->createForm(CategoriesType::class, $categories);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $photoFile= $form->get('photo')->getData();
@@ -69,11 +71,11 @@ class CategoryController extends AbstractController
 
                 // updates the 'brochureFilename' property to store the PDF file name
                 // instead of its contents
-                $category->setphoto($newFilename);
+                $categories->setphoto($newFilename);
             }
 
             $em = $this->getDoctrine()->getManager();
-            $em->persist($category);
+            $em->persist($categories);
             $em->flush();
             return $this->redirectToRoute('display_category');
             
@@ -86,7 +88,7 @@ class CategoryController extends AbstractController
 public function afficher_categories(): Response
 {
     $em = $this->getDoctrine()->getManager();
-    $categories = $em->getRepository(Category::class)->findAll();
+    $categories = $em->getRepository(Categories::class)->findAll();
     
     return $this->render('category/Affichagecategory.html.twig', [
         'categories' => $categories,
@@ -99,8 +101,8 @@ public function afficher_categories(): Response
  */
 public function modifiercategory(Request $request, $id): Response
 {
-    $category = $this->getDoctrine()->getRepository(Category::class)->find($id);
-    $form = $this->createForm(CategoryType::class, $category);
+    $Categories = $this->getDoctrine()->getRepository(Categories::class)->find($id);
+    $form = $this->createForm(CategoriesType::class, $Categories);
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
@@ -112,21 +114,19 @@ public function modifiercategory(Request $request, $id): Response
 
     return $this->render('category/updatecategory.html.twig', [
         'form' => $form->createView(),
-        'category' => $category
+        'Categories' => $Categories
     ]);
 }
      /**
      * @Route("/removecategory/{id}", name="supp_category")
      */
-    public function supressioncategory(category $category): Response
+    public function supressioncategory(Categories $Categories): Response
     {
         $em = $this->getDoctrine()->getManager();
-        $em->remove($category);
+        $em->remove($Categories);
         $em->flush();
 
         return $this->redirectToRoute('display_category');
     }
-   
-    
-     }
-    
+  
+    }

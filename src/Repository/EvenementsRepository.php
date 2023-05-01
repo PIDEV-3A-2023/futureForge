@@ -2,32 +2,32 @@
 
 namespace App\Repository;
 
-use App\Entity\Event;
+use App\Entity\Evenements;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Event>
+ * @extends ServiceEntityRepository<Evenements>
  *
- * @method Event|null find($id, $lockMode = null, $lockVersion = null)
- * @method Event|null findOneBy(array $criteria, array $orderBy = null)
- * @method Event[]    findAll()
- * @method Event[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Evenements|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Evenements|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Evenements[]    findAll()
+ * @method Evenements[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class EventRepository extends ServiceEntityRepository
+class EvenementsRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Event::class);
+        parent::__construct($registry, Evenements::class);
     }
 
     /**
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function add(Event $entity, bool $flush = true): void
+    public function add(Evenements $entity, bool $flush = true): void
     {
         $this->_em->persist($entity);
         if ($flush) {
@@ -39,7 +39,7 @@ class EventRepository extends ServiceEntityRepository
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function remove(Event $entity, bool $flush = true): void
+    public function remove(Evenements $entity, bool $flush = true): void
     {
         $this->_em->remove($entity);
         if ($flush) {
@@ -48,7 +48,7 @@ class EventRepository extends ServiceEntityRepository
     }
 
     // /**
-    //  * @return Event[] Returns an array of Event objects
+    //  * @return Evenements[] Returns an array of Evenements objects
     //  */
     /*
     public function findByExampleField($value)
@@ -65,7 +65,7 @@ class EventRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?Event
+    public function findOneBySomeField($value): ?Evenements
     {
         return $this->createQueryBuilder('e')
             ->andWhere('e.exampleField = :val')
@@ -75,10 +75,10 @@ class EventRepository extends ServiceEntityRepository
         ;
     }
     */
-    public function findAllJoinedToCategory()
+    public function findAllJoinedToCategories()
 {
     $qb = $this->createQueryBuilder('e')
-        ->leftJoin('e.categorie', 'c')
+        ->leftJoin('e.Categories_id', 'c')
         ->addSelect('c');
 
     return $qb->getQuery()->getResult();
@@ -100,10 +100,10 @@ public function findBySearchCriteria(array $criteria): array
                 ->setParameter('nom', '%' . $criteria['nom'] . '%');
         }
     
-        if (isset($criteria['categorie'])) {
-            $qb->join('a.categorie', 'c')
-               ->andWhere('c = :categorie')
-               ->setParameter('categorie', $criteria['categorie']);
+        if (isset($criteria['Categories_id'])) {
+            $qb->join('a.Categories_id', 'c')
+               ->andWhere('c = :Categories_id')
+               ->setParameter('Categories_id', $criteria['Categories_id']);
         }
     
     
@@ -117,7 +117,7 @@ public function findBySearchCriteria(array $criteria): array
     }
     
 
-    public function counteventByMonth()
+    public function countEvenementByMonth()
     {
         $qb = $this->createQueryBuilder('a');
         $qb->select("SUBSTRING(a.date, 6, 2) as month, COUNT(a.id) as count")
@@ -128,17 +128,17 @@ public function findBySearchCriteria(array $criteria): array
     
         $ByMonth = [];
         foreach ($results as $result) {
-            $eventByMonth[$result['month']] = $result['count'];
+            $EvenementsByMonth[$result['month']] = $result['count'];
         }
         
-        return $eventByMonth;
+        return $EvenementsByMonth;
     }
-    public function counteventByCategorie()
+    public function countEvenemenByCategories_id()
 {
     $results = $this->createQueryBuilder('e')
-    ->select('c.nom_categ', 'count(e.id) as nb_events')
-    ->join('e.categorie', 'c')
-    ->groupBy('c.nom_categ')
+    ->select('c.nom', 'count(e.id) as nb_events')
+    ->join('e.Categories_id', 'c')
+    ->groupBy('c.nom')
     ->getQuery()
     ->getResult();
 
@@ -146,13 +146,11 @@ public function findBySearchCriteria(array $criteria): array
     $data = [];
     foreach ($results as $result) {
         $data[] = [
-            'name' => $result['nom_categ'],
+            'name' => $result['nom'],
             'y' => (int) $result['nb_events'],
         ];
     }
 
     return $data;
 }
-
-
 }

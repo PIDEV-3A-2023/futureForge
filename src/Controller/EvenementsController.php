@@ -6,17 +6,16 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
-use App\Entity\Event;
-use App\Form\EventType;
-use App\Entity\Category;
-use App\Repository\AppointmentRepository;
-use App\Repository\EventRepository;
-use App\Form\RechercheeventType;
+use App\Entity\Evenements;
+use App\Form\EvenementsType;
+use App\Entity\Categories;
+use App\Repository\EvenementsRepository;
+use App\Form\RechercherevenementType;
 
 
 
 
-class EventController extends AbstractController
+class EvenementsController extends AbstractController
 {
     /**
      * @Route("/event", name="display_event")
@@ -41,14 +40,14 @@ class EventController extends AbstractController
  */
 public function addevent(Request $request): Response
 { 
-    $event = new Event();
-    $form = $this->createForm(EventType::class, $event);
+    $Evenements = new Evenements();
+    $form = $this->createForm(EvenementsType::class, $Evenements);
     $form->handleRequest($request);
     if ($form->isSubmitted() && $form->isValid()) {
         $em = $this->getDoctrine()->getManager();
-        $category = $form->get('categorie')->getData();
-        $event->setCategorie($category);
-        $em->persist($event);
+        $categories = $form->get('Categories_id')->getData();
+        $Evenements->setCategoriesId($categories);
+        $em->persist($Evenements);
         $em->flush();
 
         return $this->redirectToRoute('display_event');
@@ -65,7 +64,7 @@ public function addevent(Request $request): Response
 public function afficherEvents(Request $request): Response
 {   $sort_by = $request->query->get('sort_by', 'date');
     $order = $request->query->get('order', 'asc');
-    $events = $this->getDoctrine()->getRepository(Event::class)
+    $Evenements = $this->getDoctrine()->getRepository(Evenements::class)
     ->findBy([], [$sort_by => $order]);
 
 
@@ -75,7 +74,7 @@ public function afficherEvents(Request $request): Response
        
         'sort_by' => $sort_by,
         'sort_order' => $order,
-        'events' => $events,
+        'Evenements' => $Evenements,
     ]);
 }
 
@@ -84,11 +83,11 @@ public function afficherEvents(Request $request): Response
      */
     public function modifierevent(Request $request, $id): Response
     {
-        $event = new Event();
-$Categorie = $event->getCategorie(); // Accède à la propriété "categorie" via la méthode "getCategorie"
-$event->setCategorie($Categorie); // Modifie la propriété "categorie" via la méthode "setCategorie"
-        $event = $this->getDoctrine()->getRepository(Event::class)->find($id);
-$form = $this->createForm(EventType::class, $event);
+        $Evenements = new Evenements();
+$Categories_id = $Evenements->getCategoriesId(); // Accède à la propriété "categorie" via la méthode "getCategorie"
+$Evenements->setCategoriesId($Categories_id); // Modifie la propriété "categorie" via la méthode "setCategorie"
+        $Evenements = $this->getDoctrine()->getRepository(Evenements::class)->find($id);
+$form = $this->createForm(EvenementsType::class, $Evenements);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
@@ -101,10 +100,10 @@ $form = $this->createForm(EventType::class, $event);
      /**
      * @Route("/removeevent/{id}", name="supp_event")
      */
-    public function supressionevent(event $event): Response
+    public function supressionevent(Evenements $Evenements): Response
     {
         $em = $this->getDoctrine()->getManager();
-        $em->remove($event);
+        $em->remove($Evenements);
         $em->flush();
 
         return $this->redirectToRoute('display_event');
@@ -115,23 +114,23 @@ $form = $this->createForm(EventType::class, $event);
      * @Route("/search", name="event_search")
      * */
         
-            public function search(Request $request,EventRepository $repo): Response
+            public function search(Request $request,EvenementsRepository $repo): Response
             {
                 
-                $form = $this->createForm(RechercheeventType::class);
+                $form = $this->createForm(RechercherevenementType::class);
                         $form->handleRequest($request);
                     
                         if ($form->isSubmitted() && $form->isValid()) {
                             $data = $form->getData();
                             $criteria = [
                                 'nom' => $data['nom'],
-                                'categorie' => $data['categorie'],
+                                'Categories_id' => $data['Categories_id'],
                                 'type' => $data['type']
                             ];
                     
-                            $events = $repo->findBySearchCriteria($criteria);
+                            $Evenements = $repo->findBySearchCriteria($criteria);
                             return $this->render('event/search.html.twig', [
-                                'event' => $events,
+                                'Evenements' => $Evenements,
                                 'form' => $form->createView(),
                             ]);
                     
@@ -139,25 +138,28 @@ $form = $this->createForm(EventType::class, $event);
                         }
                         
                 return $this->render('event/search.html.twig', [
-                    'event' => [],
+                    'Evenements' => [],
                     'form' => $form->createView(),
                 ]);
             }
-            /**
+          /**
      * @Route("/stat", name="stat")
       * */
-            public function stat(eventRepository $eventRepository): Response
-            {
-                $eventByMonth = $eventRepository->counteventByMonth();
-                $eventByCategorie = $eventRepository->counteventByCategorie();
-                
+      public function stat(EvenementsRepository $EvenementsRepository): Response
+      {
+          $EvenementsByMonth = $EvenementsRepository->countEvenementByMonth();
+          $EvenementsByCategories_id = $EvenementsRepository->countEvenemenByCategories_id();
+          
+      
+          return $this->render('event/statistique.html.twig', [
+              'EvenementsByMonth' => $EvenementsByMonth,
+              'EvenementsByCategories_id' =>$EvenementsByCategories_id,
+              
+              
+          ]);
+      }
+      
+       
             
-                return $this->render('event/statistique.html.twig', [
-                    'eventByMonth' => $eventByMonth,
-                    'eventByCategorie' =>$eventByCategorie,
-                    
-                    
-                ]);
-            }
              
 }

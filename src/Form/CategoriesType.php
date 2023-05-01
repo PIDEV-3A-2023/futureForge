@@ -8,13 +8,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Validator\Constraints\File;
-class CategoryType extends AbstractType
+class CategoriesType extends AbstractType
 
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nom_categ')
+            ->add('nom')
             ->add('description')
             ->add('photo', FileType::class, [
                 'label' => 'photo (JPG, PNG or GIF file)',

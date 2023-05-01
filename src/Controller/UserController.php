@@ -5,7 +5,8 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Entity\Category;
+use App\Entity\Categories;
+use App\Entity\Evenements;
 class UserController extends AbstractController
 {
     /**
@@ -23,11 +24,22 @@ class UserController extends AbstractController
 public function affichercategorie(): Response
 {
     $em = $this->getDoctrine()->getManager();
-    $categories = $em->getRepository(Category::class)->findAll();
+    $categories = $em->getRepository(Categories::class)->findAll();
     
     return $this->render('category/categoryFront.html.twig', [
         'categories' => $categories,
     ]);
+} /**
+* @Route("/afficher_evenemenet", name="display_evenemenet")
+*/
+public function afficherevenement(): Response
+{
+   $em = $this->getDoctrine()->getManager();
+   $Evenements = $em->getRepository(Evenements::class)->findAll();
+   
+   return $this->render('event/Frontevent.html.twig', [
+       'Evenements' => $Evenements,
+   ]);
+
 }
-    
 }

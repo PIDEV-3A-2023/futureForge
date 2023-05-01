@@ -3,6 +3,7 @@
 </br>
     <div style="display: flex;align-items:center;justify-content: center">
         <div class="row">
+ <h1 class="text-center mt-4 mb-5">statistique de events</h1>
 
 
 
@@ -15,7 +16,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        var eventByMonthData = {{ eventByMonth|json_encode|raw }};
+        var EvenementsByMonthData = {{ EvenementsByMonth|json_encode|raw }};
 
         var ctx1 = document.getElementById('event-by-month').getContext('2d');
         var chart1 = new Chart(ctx1, {
@@ -25,18 +26,18 @@
                 datasets: [{
                     label: 'events',
                     data: [
-                        eventByMonthData['01'] || 0,
-                        eventByMonthData['02'] || 0,
-                        eventByMonthData['03'] || 0,
-                        eventByMonthData['04'] || 0,
-                        eventByMonthData['05'] || 0,
-                        eventByMonthData['06'] || 0,
-                        eventByMonthData['07'] || 0,
-                        eventByMonthData['08'] || 0,
-                        eventByMonthData['09'] || 0,
-                        eventByMonthData['10'] || 0,
-                        eventByMonthData['11'] || 0,
-                        eventByMonthData['12'] || 0,
+                        EvenementsByMonthData['01'] || 0,
+                        EvenementsByMonthData['02'] || 0,
+                        EvenementsByMonthData['03'] || 0,
+                        EvenementsByMonthData['04'] || 0,
+                        EvenementsByMonthData['05'] || 0,
+                        EvenementsByMonthData['06'] || 0,
+                        EvenementsByMonthData['07'] || 0,
+                        EvenementsByMonthData['08'] || 0,
+                        EvenementsByMonthData['09'] || 0,
+                        EvenementsByMonthData['10'] || 0,
+                        EvenementsByMonthData['11'] || 0,
+                        EvenementsByMonthData['12'] || 0,
                     ],
                     backgroundColor: 'rgba(54, 162, 235, 0.2)',
                     borderColor: 'rgba(54, 162, 235, 1)',
@@ -58,15 +59,15 @@
 
 
        // Get data from controller
-    var eventByCategorieData = {{ eventByCategorie | json_encode | raw }};
+    var EvenementsByCategories_idData = {{ EvenementsByCategories_id | json_encode | raw }};
 
     // Create arrays for labels and data
-    var Categories = [];
+    var Categories_id= [];
     var nb_events = [];
 
     // Extract data from appointmentsByMedecinData
-    eventByCategorieData.forEach(function (item) {
-        Categories.push(item.name);
+    EvenementsByCategories_idData.forEach(function (item) {
+        Categories_id.push(item.name);
         nb_events.push(item.y);
     });
 
@@ -75,7 +76,7 @@
     var chart2 = new Chart(ctx2, {
         type: 'pie',
         data: {
-            labels: Categories,
+            labels: Categories_id,
             datasets: [{
                 data: nb_events,
                 backgroundColor: [
