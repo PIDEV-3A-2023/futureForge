@@ -2,45 +2,45 @@
 
 namespace App\Entity;
 
+use App\Repository\CategoriesRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\Categories;
+use App\Entity\Evenement;
 
 /**
- * Categories
- *
- * @ORM\Table(name="categories")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass=CategoriesRepository::class)
  */
 class Categories
 {
     /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="nom", type="string", length=255, nullable=false)
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="Le nom de la catÃĐgorie ne peut pas ÃŠtre vide")
+     * @Assert\Length(max=25, maxMessage="Le nom de la catÃĐgorie doit faire au maximum {{ limit }} caractÃĻres")
      */
     private $nom;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="description", type="string", length=255, nullable=false)
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="La description ne peut pas ÃŠtre vide")
      */
     private $description;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="photo", type="string", length=255, nullable=false)
+     * @ORM\Column(type="string", length=255)
      */
     private $photo;
+    /**
+ * @ORM\OneToMany(targetEntity="App\Entity\Evenements", mappedBy="categories")
+ */
+private $evenements;
 
     public function getId(): ?int
     {
@@ -82,6 +82,4 @@ class Categories
 
         return $this;
     }
-
-
 }

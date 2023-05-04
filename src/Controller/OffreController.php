@@ -56,7 +56,8 @@ class OffreController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $offre = new Offre();
-        $user = $entityManager->find(User::class, 1);
+       
+       // $user = $entityManager->find(User::class, 1);
         $form = $this->createForm(OffreType::class, $offre);
         $form->handleRequest($request);
 
@@ -70,7 +71,7 @@ class OffreController extends AbstractController
             );
             // dd($offre);
             $offre->setImageVehicule($filename);
-            $offre->setIdUser($user);
+            //$offre->setIdUser($user);
             $entityManager->persist($offre);
             $entityManager->flush();
 
@@ -86,6 +87,8 @@ class OffreController extends AbstractController
     #[Route('/{idOffre}', name: 'app_offre_show', methods: ['GET'])]
     public function show(Offre $offre, EntityManagerInterface $entityManager): Response
     {
+        $user = $this->getUser(); 
+        $username=$user->getUsername();
         $avis = $entityManager
             ->getRepository(Avis::class)
             ->findAll();
@@ -107,14 +110,15 @@ class OffreController extends AbstractController
         return $this->render('offre/show.html.twig', [
             'offre' => $offre,
             'avis' => $avis,
-            'avgRate' => $averageRate
+            'avgRate' => $averageRate,
+            'username' => $username,
         ]);
     }
 
     #[Route('/{idOffre}/edit', name: 'app_offre_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Offre $offre, EntityManagerInterface $entityManager): Response
     {
-        $user = $entityManager->find(User::class, 1);
+        //$user = $entityManager->find(User::class, 1);
         $form = $this->createForm(OffreType::class, $offre);
         $form->handleRequest($request);
 
@@ -128,7 +132,7 @@ class OffreController extends AbstractController
             );
             // dd($offre);
             $offre->setImageVehicule($filename);
-            $offre->setIdUser($user);
+           // $offre->setIdUser($user);
             $entityManager->persist($offre);
             $entityManager->flush();
 
@@ -156,7 +160,8 @@ class OffreController extends AbstractController
     
     public function addAvis(Request $request, Offre $offre, EntityManagerInterface $entityManager)
 {
-    $user = $entityManager->find(User::class, 1);
+   // $user = $entityManager->find(User::class, 1);
+   $user=$this->getUser();  
     $avis = new Avis();
     $avis->setIdOffre($offre);
     $avis->setIdUser($user);

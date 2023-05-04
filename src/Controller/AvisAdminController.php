@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Avis;
 use App\Entity\Offre;
 use App\Form\AvisType;
+use App\Repository\AvisRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,6 +16,102 @@ use CMEN\GoogleChartsBundle\GoogleCharts\Charts\PieChart;
 #[Route('/admin/avis')]
 class AvisAdminController extends AbstractController
 {
+    #[Route('/sortByAscRating', name: 'sort_by_asc_rating')]
+    public function sortAscRating(EntityManagerInterface $entityManager, AvisRepository $avisRepository, Request $request)
+    {
+        $avis = $entityManager
+            ->getRepository(Avis::class)
+            ->findAll();
+        $offres = $entityManager
+            ->getRepository(Offre::class)
+            ->findAll();
+            
+        $pieChart = new PieChart();
+
+        $charts = [['Avis', 'Number per Offre']];
+
+        foreach ($offres as $o) {
+            $offreN = 0;
+            foreach ($avis as $a) {
+                if ($o == $a->getIdOffre()) {
+                    $offreN++;
+                }
+            }
+
+            array_push($charts, [$o->getDestination(), $offreN]);
+        }
+        
+        $pieChart->getData()->setArrayToDataTable($charts);
+
+        // dd($pieChart);
+
+        $pieChart->getOptions()->setTitle('Offre reach by Avis');
+        $pieChart->getOptions()->setHeight(400);
+        $pieChart->getOptions()->setWidth(400);
+        $pieChart
+            ->getOptions()
+            ->getTitleTextStyle()
+            ->setColor('#07600');
+        $pieChart
+            ->getOptions()
+            ->getTitleTextStyle()
+            ->setFontSize(25);
+        $avis = $avisRepository->sortByAscRating();
+    
+        return $this->render("avisAdmin/index.html.twig",[
+            'avis' => $avis,
+            'piechart' => $pieChart,
+        ]);
+    }
+    
+    #[Route('/sortByDescRating', name: 'sort_by_desc_rating')]
+    public function sortDescRating(EntityManagerInterface $entityManager, AvisRepository $avisRepository, Request $request)
+    {
+        $avis = $entityManager
+            ->getRepository(Avis::class)
+            ->findAll();
+        $offres = $entityManager
+            ->getRepository(Offre::class)
+            ->findAll();
+            
+        $pieChart = new PieChart();
+
+        $charts = [['Avis', 'Number per Offre']];
+
+        foreach ($offres as $o) {
+            $offreN = 0;
+            foreach ($avis as $a) {
+                if ($o == $a->getIdOffre()) {
+                    $offreN++;
+                }
+            }
+
+            array_push($charts, [$o->getDestination(), $offreN]);
+        }
+        
+        $pieChart->getData()->setArrayToDataTable($charts);
+
+        // dd($pieChart);
+
+        $pieChart->getOptions()->setTitle('Offre reach by Avis');
+        $pieChart->getOptions()->setHeight(400);
+        $pieChart->getOptions()->setWidth(400);
+        $pieChart
+            ->getOptions()
+            ->getTitleTextStyle()
+            ->setColor('#07600');
+        $pieChart
+            ->getOptions()
+            ->getTitleTextStyle()
+            ->setFontSize(25);
+        $avis = $avisRepository->sortByDescRating();
+    
+        return $this->render("avisAdmin/index.html.twig",[
+            'avis' => $avis,
+            'piechart' => $pieChart,
+        ]);
+    }
+
     #[Route('/', name: 'admin_avis_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {

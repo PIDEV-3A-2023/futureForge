@@ -46,7 +46,7 @@ class AbonnementController extends AbstractController
     #[Route('/new/{id}', name: 'app_abonnement_new', methods: ['GET', 'POST'])]
     public function new(Offre2 $offre2, Request $request, EntityManagerInterface $entityManager): Response
     {
-        $user = $entityManager->find(User::class, 1); //$user=$this->getUser();
+        $user=$this->getUser();
         $abonnement = new Abonnement();
         $form = $this->createForm(AbonnementType::class, $abonnement);
         $form->handleRequest($request);

@@ -16,6 +16,7 @@
         "egulias/email-validator": "^4.0",
         "endroid/qr-code-bundle": "^4.3",
         "knplabs/knp-paginator-bundle": "*",
+        "scheb/2fa-email": "^6.8",
         "sensio/framework-extra-bundle": "^6.2",
         "symfony/asset": "5.4.*",
         "symfony/console": "5.4.*",
@@ -26,11 +27,14 @@
         "symfony/google-mailer": "5.4.*",
         "symfony/mailer": "5.4.*",
         "symfony/mime": "5.4.*",
+        "symfony/notifier": "6.1.*",
         "symfony/runtime": "5.4.*",
+        "symfony/security-bundle": "6.1.*",
         "symfony/security-csrf": "5.4.*",
         "symfony/twig-bundle": "5.4.*",
         "symfony/validator": "5.4.*",
         "symfony/yaml": "5.4.*",
+        "symfonycasts/reset-password-bundle": "^1.17",
         "twilio/sdk": "^7.3"
     },
     "config": {

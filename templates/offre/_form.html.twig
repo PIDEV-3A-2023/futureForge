@@ -79,6 +79,13 @@
 		{{ form_errors(form.placesDispo,{'attr':{'class':'form-control'}}) }}
 	</div>
 </div>
+<div class="form-group">
+	{{form_label(form.idUser,'User : ',{'attr':{'class':'form-label'}})}}
+	{{form_widget(form.idUser,{'attr':{'class':'form-control'}})}}
+	<div style="color: red; list-style: none;">
+		{{ form_errors(form.idUser,{'attr':{'class':'form-control'}}) }}
+	</div>
+</div>
 
 <button type="submit" style="background-color: #01d28e!important; border-color: #01d28e!important;" class="btn btn-primary py-3 px-5">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}

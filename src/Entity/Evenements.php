@@ -2,68 +2,67 @@
 
 namespace App\Entity;
 
-use Doctrine\DBAL\Types\Types;
+use App\Repository\EvenementsRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\Categories;
+use App\Entity\Evenements;
 
 /**
- * Evenements
- *
- * @ORM\Table(name="evenements", indexes={@ORM\Index(name="categories_id", columns={"Categorie_id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass=EvenementsRepository::class)
  */
 class Evenements
 {
     /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="nom", type="string", length=255, nullable=false)
+     * @ORM\Column(type="string", length=255)
+     *  @Assert\NotBlank(message="Le nom de l'événement ne peut pas être vide")
+     * @Assert\Length(max=255, maxMessage="Le nom de l'événement doit faire au maximum {{ limit }} caractères")
      */
+    
     private $nom;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="type", type="string", length=255, nullable=false)
+     * @ORM\Column(type="string", length=255)
+     *  @Assert\NotBlank(message="Le type de l'événement ne peut pas être vide")
+     * @Assert\Length(max=255, maxMessage="Le type de l'événement doit faire au maximum {{ limit }} caractères")
      */
     private $type;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="description", type="string", length=255, nullable=false)
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="La description de l'événement ne peut pas être vide")
+     * @Assert\Length(max=255, maxMessage="La description de l'événement doit faire au maximum {{ limit }} caractères")
      */
     private $description;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="date", type="date", nullable=false)
+     * @ORM\Column(type="date")
+     * @Assert\NotBlank(message="La date de l'événement ne peut pas être vide")
+     * @Assert\GreaterThanOrEqual("today", message="La date de l'événement doit être égale ou supérieure à aujourd'hui")
      */
     private $date;
 
-    /**
-     * @var \Categories
-     *
-     * @ORM\ManyToOne(targetEntity="Categories")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="Categorie_id", referencedColumnName="id")
-     * })
+      /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Categories")
+     * @ORM\JoinColumn(name="categorie_id", referencedColumnName="id")
+     * @Assert\NotNull(message="La catégorie de l'événement ne peut pas être vide")
+    
      */
-    private $categorie;
+    private $Categories_id;
 
     public function getId(): ?int
     {
         return $this->id;
     }
+
+   
 
     public function getNom(): ?string
     {
@@ -113,17 +112,15 @@ class Evenements
         return $this;
     }
 
-    public function getCategorie(): ?Categories
+    public function getCategoriesId(): ?Categories
     {
-        return $this->categorie;
+        return $this->Categories_id;
     }
 
-    public function setCategorie(?Categories $categorie): self
+    public function setCategoriesId(?Categories $Categories_id): self
     {
-        $this->categorie = $categorie;
+        $this->Categories_id = $Categories_id;
 
         return $this;
     }
-
-
 }

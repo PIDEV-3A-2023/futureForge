@@ -15,7 +15,7 @@ use Knp\Component\Pager\PaginatorInterface;
 #[Route('/admin/offre2')]
 class Offre2AdminController extends AbstractController
 {
-    #[Route('/', name: 'admin_offre2_index', methods: ['GET', 'POST'])]
+    #[Route('/', name: 'offre2_index', methods: ['GET', 'POST'])]
     public function index(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
     {
         $form = $this->createForm(Offre2FilterType::class);

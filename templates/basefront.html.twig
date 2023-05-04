@@ -48,9 +48,6 @@
 							<a href="{{ path('app_abonnement_index') }}" class="nav-link">Abonnement</a>
 						</li>
 						<li class="nav-item">
-							<a href="{{ path('app_offre2_index') }}" class="nav-link">Offre Ab</a>
-						</li>
-						<li class="nav-item">
 							<a href="{{ path('app_offre_index') }}" class="nav-link">Offre de Cov</a>
 						</li>
 						<li class="nav-item">
@@ -59,6 +56,19 @@
 						<li class="nav-item">
 							<a href="{{ path('app_reservation_covoiturage_index') }}" class="nav-link">Reservation Covoiturage</a>
 						</li>
+							 {% if app.user %}
+            <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                            <img class="rounded-circle me-lg-2" src="{{ asset ('uploads/profile_picture/' ~ app.user.pfpU) }}" alt="" style="width: 40px; height: 40px;">
+                            <span class="d-none d-lg-inline-flex">{{ app.user.nom }}</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
+                            <a href="{{ path('profile') }}" class="dropdown-item">My Profile</a>
+                            <a href="#" class="dropdown-item">Settings</a>
+                            <a href="{{ path('app_logout') }}" class="dropdown-item">Log Out</a>
+                        </div>
+              </div>
+              {% endif %}
 					</ul>
 				</div>
 			</div>
@@ -72,6 +82,8 @@
 					<div class="col-lg-8 ftco-animate">
 						<div class="text w-100 text-center mb-md-5 pb-md-5">
 							<h1 class="mb-4">Fast &amp; Easy Way To MOVE</h1>
+						<a href="{{ path('app_login') }}" class="nav-item nav-link">
+							<i class="fa fa-tachometer-alt me-2"></i>Login</a>
 							<!-- <p style="font-size: 18px;">A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic country, in which roasted parts</p> 
 																																																																																																																																					<a href="https://vimeo.com/45830194" class="icon-wrap popup-vimeo d-flex align-items-center mt-4 justify-content-center">
 																																																																																																																																						<div class="icon d-flex align-items-center justify-content-center">

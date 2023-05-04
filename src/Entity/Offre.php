@@ -107,7 +107,7 @@ class Offre
      *
      * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_user", referencedColumnName="id_user")
+     *   @ORM\JoinColumn(name="id_user", referencedColumnName="id")
      * })
      */
     private $idUser;
@@ -230,9 +230,9 @@ class Offre
         return $this->idUser;
     }
 
-    public function setIdUser(?User $idUser): self
-    {
-        $this->idUser = $idUser;
+   public function setIdUser(?User $idUser): self
+   {
+      $this->idUser = $idUser;
 
         return $this;
     }

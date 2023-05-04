@@ -10,21 +10,49 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[Route('/admin/reservation/bus')]
 class ReservationBusAdminController extends AbstractController
 {
-    #[Route('/search', name: 'reservation_bus_search')]
-    public function search(Request $request, ReservationBusRepository $reservation_busRepository): Response
-    {
-        $query = $request->query->get('q');
-        $reservation_bus = $reservation_busRepository->findByNom($query);
+    private $reservationBusRepository;
 
-        return $this->render('reservation_busAdmin/search.html.twig', [
-            'reservation_buses' => $reservation_bus,
-            'query' => $query,
+    public function __construct(ReservationBusRepository $reservationBusRepository)
+    {
+        $this->reservationBusRepository = $reservationBusRepository;
+    }
+    
+    #[Route('/sortByAscDate', name: 'sort_by_asc_date')]
+    public function sortAscDate(ReservationBusRepository $reservationBusRepository, Request $request)
+    {
+        $reservationBuses = $reservationBusRepository->sortByAscDate();
+    
+        return $this->render("reservation_busAdmin/index.html.twig",[
+            'reservation_buses' => $reservationBuses,
         ]);
     }
+    
+    #[Route('/sortByDescDate', name: 'sort_by_desc_date')]
+    public function sortDescDate(ReservationBusRepository $reservationBusRepository, Request $request)
+    {
+        $reservationBuses = $reservationBusRepository->sortByDescDate();
+    
+        return $this->render("reservation_busAdmin/index.html.twig",[
+            'reservation_buses' => $reservationBuses,
+        ]);
+    }
+
+    // #[Route('/search', name: 'reservation_bus_search')]
+    // public function search(Request $request, ReservationBusRepository $reservation_busRepository): Response
+    // {
+    //     $query = $request->query->get('q');
+    //     $reservation_bus = $reservation_busRepository->findByNom($query);
+
+    //     return $this->render('reservation_busAdmin/search.html.twig', [
+    //         'reservation_buses' => $reservation_bus,
+    //         'query' => $query,
+    //     ]);
+    // }
 
     #[Route('/', name: 'admin_reservation_bus_index', methods: ['GET'])]
     public function index(Request $request, ReservationBusRepository $reservation_busRepository, EntityManagerInterface $entityManager): Response
@@ -96,5 +124,32 @@ class ReservationBusAdminController extends AbstractController
         }
 
         return $this->redirectToRoute('admin_reservation_bus_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    public function searchResBus(Request $request)
+    {
+        $searchTerm = $request->query->get('searchTerm');
+
+        if ($searchTerm === '') {
+            $reservationBuses = $this->reservationBusRepository->findAll();
+        } else {
+            $reservationBuses = $this->reservationBusRepository->findByNom($searchTerm);
+        }
+
+        $response = [];
+        foreach ($reservationBuses as $reservation) {
+            $response[] = [
+                'nom' => $reservation->getNom(),
+                'prenom' => $reservation->getPrenom(),
+                'numPlace' => $reservation->getNumPlace(),
+                'date' => $reservation->getDate() ? $reservation->getDate()->format('Y-m-d') : null,
+                'email' => $reservation->getEmail(),
+                'destination' => $reservation->getDestination(),
+                'showUrl' => $this->generateUrl('admin_reservation_bus_show', ['idReservationBus' => $reservation->getIdReservationBus()]),
+                'editUrl' => $this->generateUrl('admin_reservation_bus_edit', ['idReservationBus' => $reservation->getIdReservationBus()])
+            ];
+        }
+
+        return new JsonResponse($response);
     }
 }

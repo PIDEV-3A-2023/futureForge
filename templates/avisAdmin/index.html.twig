@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'basebackUser.html.twig' %}
 
 {% block title %}Avis index
 {% endblock %}
@@ -12,6 +12,9 @@
 	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	<script type="text/javascript">
 		{{ gc_draw(piechart, "div_chart") }}</script>
+
+	<a style="width: 180px; margin: 10px;" class="btn btn-primary" href="{{path('sort_by_asc_rating')}}">Rating Asc</a>
+	<a style="width: 180px; margin: 10px" class="btn btn-primary" href="{{path('sort_by_desc_rating')}}">Rating Desc</a>
 
 	<table class="table">
 		<thead>

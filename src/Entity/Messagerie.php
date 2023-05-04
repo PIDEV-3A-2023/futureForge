@@ -40,7 +40,7 @@ class Messagerie
      *
      * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="user", referencedColumnName="id_user")
+     *   @ORM\JoinColumn(name="user", referencedColumnName="id")
      * })
      */
     private $user;

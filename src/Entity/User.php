@@ -2,244 +2,346 @@
 
 namespace App\Entity;
 
+use App\Repository\UserRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Scheb\TwoFactorBundle\Model\Email\TwoFactorInterface;
 
 /**
- * User
- *
  * @ORM\Table(name="user")
  * @ORM\Entity
  */
-class User
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     /**
-     * @var int
-     *
-     * @ORM\Column(name="id_user", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
-    private $idUser;
+    private $id;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="nom_u", type="string", length=255, nullable=false)
+     * @ORM\Column(type="string", length=180, unique=true)
      */
-    private $nomU;
+    private $email;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="prenom_u", type="string", length=255, nullable=false)
+     * @ORM\Column(type="json")
      */
-    private $prenomU;
+    private $roles = [];
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="email_u", type="string", length=255, nullable=false)
+     * @var string The hashed password
+     * @ORM\Column(type="string")
+     * @Assert\NotBlank(message="Password ne devrait pas être vide!!!")
      */
-    private $emailU;
+    private $password;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="tel_u", type="string", length=15, nullable=false)
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="Nom ne devrait pas être vide!!!")
+     * @Assert\Regex(
+     *     pattern="/^[a-zA-Z]*$/",
+     *     message="Nom ne devrait contenir que des lettres"
+     * )
      */
-    private $telU;
+    private $nom;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="role_u", type="string", length=10, nullable=false)
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="Prenom ne devrait pas être vide!!!")
+     * @Assert\Regex(
+     *     pattern="/^[a-zA-Z]*$/",
+     *     message="Prenom ne devrait contenir que des lettres"
+     * )
      */
-    private $roleU;
+    private $prenom;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="password_u", type="string", length=255, nullable=false)
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="Username ne devrait pas être vide!!!")
      */
-    private $passwordU;
+    private $username;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="user_name", type="string", length=255, nullable=false)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $userName;
+    private $matricule;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="matricule_u", type="string", length=255, nullable=false)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $matriculeU;
+    private $pfp_u;
 
     /**
-     * @var string|null
-     *
-     * @ORM\Column(name="pfp_u", type="blob", length=0, nullable=true, options={"default"="NULL"})
+     * @ORM\Column(type="text", nullable=true)
      */
-    private $pfpU = 'NULL';
+    private $bio;
 
     /**
-     * @var string|null
-     *
-     * @ORM\Column(name="identifiant", type="string", length=20, nullable=true, options={"default"="NULL"})
+     * @ORM\Column(type="boolean", nullable=true)
      */
-    private $identifiant = 'NULL';
+    private $active;
 
     /**
-     * @var int|null
-     *
-     * @ORM\Column(name="active", type="integer", nullable=true, options={"default"="NULL"})
+     * @ORM\Column(type="datetime", nullable=true)
      */
-    private $active = NULL;
+    private $block_date;
 
-    public function getIdUser(): ?int
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $verif_code;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $email_verif;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $tel_verif;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $appeal;
+
+    public function getId(): ?int
     {
-        return $this->idUser;
+        return $this->id;
     }
 
-    public function getNomU(): ?string
+    public function getEmail(): ?string
     {
-        return $this->nomU;
+        return $this->email;
     }
 
-    public function setNomU(string $nomU): self
+    public function setEmail(string $email): self
     {
-        $this->nomU = $nomU;
+        $this->email = $email;
 
         return $this;
     }
 
-    public function getPrenomU(): ?string
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
     {
-        return $this->prenomU;
+        return (string) $this->email;
     }
 
-    public function setPrenomU(string $prenomU): self
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
     {
-        $this->prenomU = $prenomU;
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
 
         return $this;
     }
 
-    public function getEmailU(): ?string
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
+    public function getPassword(): string
     {
-        return $this->emailU;
+        return $this->password;
     }
 
-    public function setEmailU(string $emailU): self
+    public function setPassword(string $password): self
     {
-        $this->emailU = $emailU;
+        $this->password = $password;
 
         return $this;
     }
 
-    public function getTelU(): ?string
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials()
     {
-        return $this->telU;
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
     }
 
-    public function setTelU(string $telU): self
+    public function getNom(): ?string
     {
-        $this->telU = $telU;
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): self
+    {
+        $this->nom = $nom;
 
         return $this;
     }
 
-    public function getRoleU(): ?string
+    public function getPrenom(): ?string
     {
-        return $this->roleU;
+        return $this->prenom;
     }
 
-    public function setRoleU(string $roleU): self
+    public function setPrenom(string $prenom): self
     {
-        $this->roleU = $roleU;
+        $this->prenom = $prenom;
 
         return $this;
     }
 
-    public function getPasswordU(): ?string
+    public function getUsername(): ?string
     {
-        return $this->passwordU;
+        return $this->username;
     }
 
-    public function setPasswordU(string $passwordU): self
+    public function setUsername(string $username): self
     {
-        $this->passwordU = $passwordU;
+        $this->username = $username;
 
         return $this;
     }
 
-    public function getUserName(): ?string
+    public function getMatricule(): ?string
     {
-        return $this->userName;
+        return $this->matricule;
     }
 
-    public function setUserName(string $userName): self
+    public function setMatricule(?string $matricule): self
     {
-        $this->userName = $userName;
+        $this->matricule = $matricule;
 
         return $this;
     }
 
-    public function getMatriculeU(): ?string
+    public function getPfpU(): ?string
     {
-        return $this->matriculeU;
+        return $this->pfp_u;
     }
 
-    public function setMatriculeU(string $matriculeU): self
+    public function setPfpU(?string $pfp_u): self
     {
-        $this->matriculeU = $matriculeU;
+        $this->pfp_u = $pfp_u;
 
         return $this;
     }
 
-    public function getPfpU()
+    public function getTel(): ?string
     {
-        return $this->pfpU;
+        return $this->tel;
     }
 
-    public function setPfpU($pfpU): self
+    public function setTel(?string $tel): self
     {
-        $this->pfpU = $pfpU;
+        $this->tel = $tel;
 
         return $this;
     }
 
-    public function getIdentifiant(): ?string
+    public function getBio(): ?string
     {
-        return $this->identifiant;
+        return $this->bio;
     }
 
-    public function setIdentifiant(?string $identifiant): self
+    public function setBio(?string $bio): self
     {
-        $this->identifiant = $identifiant;
+        $this->bio = $bio;
 
         return $this;
     }
 
-    public function getActive(): ?int
+    public function isActive(): ?bool
     {
         return $this->active;
     }
 
-    public function setActive(?int $active): self
+    public function setActive(?bool $active): self
     {
         $this->active = $active;
 
         return $this;
     }
 
-    public function __toString()
+    public function getBlockDate(): ?\DateTimeInterface
     {
-        return (string) $this->nomU . ' ' . $this->prenomU;
+        return $this->block_date;
     }
 
+    public function setBlockDate(?\DateTimeInterface $block_date): self
+    {
+        $this->block_date = $block_date;
 
+        return $this;
+    }
+
+    public function getVerifCode(): ?string
+    {
+        return $this->verif_code;
+    }
+
+    public function setVerifCode(?string $verif_code): self
+    {
+        $this->verif_code = $verif_code;
+
+        return $this;
+    }
+
+    public function isEmailVerif(): ?bool
+    {
+        return $this->email_verif;
+    }
+
+    public function setEmailVerif(?bool $email_verif): self
+    {
+        $this->email_verif = $email_verif;
+
+        return $this;
+    }
+
+    public function isTelVerif(): ?bool
+    {
+        return $this->tel_verif;
+    }
+
+    public function setTelVerif(?bool $tel_verif): self
+    {
+        $this->tel_verif = $tel_verif;
+
+        return $this;
+    }
+
+    public function getAppeal(): ?string
+    {
+        return $this->appeal;
+    }
+
+    public function setAppeal(?string $appeal): self
+    {
+        $this->appeal = $appeal;
+
+        return $this;
+    }
+    public function getSalt(): ?string
+{
+    // Return null to use the default bcrypt algorithm for password hashing
+    return null;
+}
+public function __toString() {
+    return $this->getUsername();
+}
 }

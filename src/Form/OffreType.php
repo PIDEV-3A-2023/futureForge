@@ -2,13 +2,14 @@
 
 namespace App\Form;
 
+use App\Entity\User;
 use App\Entity\Offre;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 class OffreType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -27,7 +28,9 @@ class OffreType extends AbstractType
             ->add('depart')
             ->add('destination')
             ->add('placesDispo')
-            // ->add('idUser')
+           // ->add('idUser')
+            ->add('idUser',EntityType::class,['class'=>User::class,'choice_label'=>'email']);
+    
         ;
     }
 

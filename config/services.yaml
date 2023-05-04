@@ -5,6 +5,7 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     uploads_directory: '%kernel.project_dir%/public/uploads'
+    user_pfp: '%kernel.project_dir%/public/uploads/profile_picture'
     locale: 'en'
 services:
     # default configuration for services in *this* file
@@ -20,6 +21,10 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+    Twilio\Rest\Client:
+        arguments:
+            - '%env(AC5f2f3bfeb5b06afb41108004bdac2604)%'
+            - '%env(5350aec9663d774c6aa215abb44f7a7d)%'
     Symfony\Component\Mailer\Mailer:
         class: Symfony\Component\Mailer\Mailer
         arguments:

@@ -61,7 +61,7 @@ class ReservationBusController extends AbstractController
                 ' has been added with the date ' .
                 $reservationBu->getDate()->format('d-m-Y') .
                 '. Thank you for your trust.';
-            $phoneNumber = '+21626699906'; // user's phone number
+            $phoneNumber = '+21694392948'; // user's phone number
 
             $this->twilioSmsService->sendSms($message, $phoneNumber);
 

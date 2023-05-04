@@ -15,7 +15,8 @@ class AvisType extends AbstractType
             ->add('rate')
             ->add('descriptionAvis')
             // ->add('idOffre')
-            // ->add('idUser')
+            // ->add('idUser', null, [
+             //   'label' => 'Username',])
         ;
     }
 

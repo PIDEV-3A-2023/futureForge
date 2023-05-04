@@ -45,7 +45,7 @@ class ReservationCovoiturageController extends AbstractController
             $entityManager->flush();
 
             $message = "Hello " . $reservationCovoiturage->getNom() . " " . $reservationCovoiturage->getPrenom() . ", your reservation for " . $reservationCovoiturage->getNbrPlace() . " places, from " . $reservationCovoiturage->getPntRencontre() . " to " . $reservationCovoiturage->getDistination() . " has been added with the date " . $reservationCovoiturage->getDate()->format('d-m-Y') . ". Thank you for your trust.";
-            $phoneNumber = "+21626699906"; // user's phone number
+            $phoneNumber = "+21694392948"; // user's phone number
     
             $this->twilioSmsService->sendSms($message, $phoneNumber);
 

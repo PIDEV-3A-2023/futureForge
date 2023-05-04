@@ -39,49 +39,40 @@ class ReservationBusRepository extends ServiceEntityRepository
         }
     }
 
-    public function findByNom($query)
-    {
-        $qb = $this->createQueryBuilder('e');
-        $qb->where($qb->expr()->orX(
-            $qb->expr()->like('e.nom', ':query'),
-            $qb->expr()->like('e.prenom', ':query')
-        ));
-        $qb->setParameter('query', '%'.$query.'%');
+    // public function findByNom($query)
+    // {
+    //     $qb = $this->createQueryBuilder('e');
+    //     $qb->where($qb->expr()->orX(
+    //         $qb->expr()->like('e.nom', ':query'),
+    //         $qb->expr()->like('e.prenom', ':query')
+    //     ));
+    //     $qb->setParameter('query', '%'.$query.'%');
 
-        return $qb->getQuery()->getResult();
+    //     return $qb->getQuery()->getResult();
+    // }
+    
+    public function findByNom($nom)
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.nom LIKE :nom')
+            ->setParameter('nom', '%' . $nom . '%')
+            ->getQuery()
+            ->getResult();
     }
 
-    public function sortByAscEtat(): array
+    public function sortByAscDate(): array
     {
         return $this->createQueryBuilder('c')
-            ->orderBy('c.etat', 'ASC')
+            ->orderBy('c.date', 'ASC')
             ->getQuery()
             ->getResult()
         ;
     }
     
-    public function sortByDescEtat(): array
+    public function sortByDescDate(): array
     {
         return $this->createQueryBuilder('c')
-            ->orderBy('c.etat', 'DESC')
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-
-    public function sortByAscNom(): array
-    {
-        return $this->createQueryBuilder('c')
-            ->orderBy('c.nom', 'ASC')
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    
-    public function sortByDescNom(): array
-    {
-        return $this->createQueryBuilder('c')
-            ->orderBy('c.nom', 'DESC')
+            ->orderBy('c.date', 'DESC')
             ->getQuery()
             ->getResult()
         ;
